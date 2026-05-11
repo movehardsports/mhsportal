@@ -48,9 +48,9 @@ export default function Header() {
           </div>
 
           <div className="absolute inset-y-0 right-0 hidden sm:flex items-center gap-4 sm:static sm:inset-auto sm:ml-6">
-            <a href="#" className="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wide transition-colors">
+            <Link href="/login" className="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wide transition-colors">
               SIGN IN
-            </a>
+            </Link>
             <Link
               href="/register"
               className="bg-white text-gray-900 px-4 py-1.5 rounded-full text-sm font-semibold uppercase tracking-wide hover:bg-gray-200 transition-colors"
@@ -74,9 +74,9 @@ export default function Header() {
             </DisclosureButton>
           ))}
           <div className="border-t border-white/10 mt-2 pt-2 space-y-1">
-            <a href="#" className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white">
+            <Link href="/login" className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white">
               SIGN IN
-            </a>
+            </Link>
             <Link href="/register" className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white">
               JOIN
             </Link>
