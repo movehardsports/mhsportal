@@ -1,5 +1,6 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 
 const navigation = [
   { name: 'For Athletes', href: '#' },
@@ -50,12 +51,12 @@ export default function Header() {
             <a href="#" className="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wide transition-colors">
               SIGN IN
             </a>
-            <a
-              href="#"
+            <Link
+              href="/register"
               className="bg-white text-gray-900 px-4 py-1.5 rounded-full text-sm font-semibold uppercase tracking-wide hover:bg-gray-200 transition-colors"
             >
               JOIN
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -76,9 +77,9 @@ export default function Header() {
             <a href="#" className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white">
               SIGN IN
             </a>
-            <a href="#" className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white">
+            <Link href="/register" className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white">
               JOIN
-            </a>
+            </Link>
           </div>
         </div>
       </DisclosurePanel>
