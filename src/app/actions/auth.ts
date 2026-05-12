@@ -12,6 +12,15 @@ type FormState = {
   }
 } | undefined
 
+type OnboardingFormState = {
+  errors?: {
+    first_name?: string
+    last_name?: string
+    brand_name?: string
+    general?: string
+  }
+} | undefined
+
 export async function signUp(state: FormState, formData: FormData): Promise<FormState> {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -36,5 +45,54 @@ export async function signUp(state: FormState, formData: FormData): Promise<Form
 
   if (error) return { errors: { general: error.message } }
 
-  redirect('/login')
+  redirect('/onboarding')
+}
+
+export async function completeOnboarding(
+  state: OnboardingFormState,
+  formData: FormData
+): Promise<OnboardingFormState> {
+  const supabase = await createClient()
+
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+  if (userError || !user) return { errors: { general: 'Not authenticated.' } }
+
+  const accountType = user.user_metadata?.account_type
+  if (accountType !== 'athlete' && accountType !== 'brand') {
+    return { errors: { general: 'Invalid account type.' } }
+  }
+
+  const errors: NonNullable<NonNullable<OnboardingFormState>['errors']> = {}
+
+  if (accountType === 'athlete') {
+    const firstName = (formData.get('first_name') as string)?.trim()
+    const lastName = (formData.get('last_name') as string)?.trim()
+
+    if (!firstName) errors.first_name = 'First name is required.'
+    if (!lastName) errors.last_name = 'Last name is required.'
+
+    if (Object.keys(errors).length > 0) return { errors }
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ first_name: firstName, last_name: lastName, onboarding_completed: true })
+      .eq('id', user.id)
+
+    if (error) return { errors: { general: error.message } }
+  } else {
+    const brandName = (formData.get('brand_name') as string)?.trim()
+
+    if (!brandName) errors.brand_name = 'Brand name is required.'
+
+    if (Object.keys(errors).length > 0) return { errors }
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ brand_name: brandName, onboarding_completed: true })
+      .eq('id', user.id)
+
+    if (error) return { errors: { general: error.message } }
+  }
+
+  redirect('/')
 }
