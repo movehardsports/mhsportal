@@ -1,12 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useActionState } from 'react'
+import { signUp } from '@/app/actions/auth'
 
 type AccountType = 'athlete' | 'brand' | null
 
 export default function Registration() {
   const [accountType, setAccountType] = useState<AccountType>(null)
+  const [state, action, pending] = useActionState(signUp, undefined)
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -17,7 +19,7 @@ export default function Registration() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6">
+        <form action={action} className="space-y-6">
 
           <div>
             <div className="grid grid-cols-2 gap-3">
@@ -45,6 +47,9 @@ export default function Registration() {
               </button>
             </div>
             <input type="hidden" name="account-type" value={accountType ?? ''} />
+            {state?.errors?.accountType && (
+              <p className="mt-2 text-sm text-red-400">{state.errors.accountType}</p>
+            )}
           </div>
 
           <div>
@@ -61,6 +66,9 @@ export default function Registration() {
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
               />
             </div>
+            {state?.errors?.email && (
+              <p className="mt-2 text-sm text-red-400">{state.errors.email}</p>
+            )}
           </div>
 
           <div>
@@ -77,15 +85,22 @@ export default function Registration() {
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
               />
             </div>
+            {state?.errors?.password && (
+              <p className="mt-2 text-sm text-red-400">{state.errors.password}</p>
+            )}
           </div>
+
+          {state?.errors?.general && (
+            <p className="text-sm text-red-400">{state.errors.general}</p>
+          )}
 
           <div>
             <button
               type="submit"
-              disabled={!accountType}
+              disabled={pending}
               className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Join
+              {pending ? 'Joining...' : 'Join'}
             </button>
           </div>
         </form>
