@@ -1,6 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 
 type FormState = {
@@ -70,13 +71,19 @@ export async function signIn(state: FormState, formData: FormData): Promise<Form
     .eq('id', data.user.id)
     .single()
 
-  redirect(profile?.onboarding_completed ? '/' : '/onboarding')
+  redirect(profile?.onboarding_completed ? '/dashboard' : '/onboarding')
 }
 
 export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
-  redirect('/login')
+
+  const cookieStore = await cookies()
+  cookieStore.getAll()
+    .filter(c => c.name.startsWith('sb-'))
+    .forEach(c => cookieStore.delete(c.name))
+
+  redirect('/')
 }
 
 export async function completeOnboarding(
@@ -125,5 +132,5 @@ export async function completeOnboarding(
     if (error) return { errors: { general: error.message } }
   }
 
-  redirect('/')
+  redirect('/dashboard')
 }

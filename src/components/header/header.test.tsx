@@ -46,15 +46,10 @@ describe('Header', () => {
   describe('when user is logged in', () => {
     const mockUser = { email: 'test@example.com' } as never
 
-    it('renders user email', () => {
+    it('renders dashboard link', () => {
       render(<Header user={mockUser} />)
-      expect(screen.getByText('test@example.com')).toBeInTheDocument()
-    })
-
-    it('renders sign out button', () => {
-      render(<Header user={mockUser} />)
-      const signOutButtons = screen.getAllByRole('button', { name: /sign out/i })
-      expect(signOutButtons[0]).toBeInTheDocument()
+      const dashboardLinks = screen.getAllByRole('link', { name: /dashboard/i })
+      expect(dashboardLinks[0]).toHaveAttribute('href', '/dashboard')
     })
 
     it('does not render sign in link', () => {

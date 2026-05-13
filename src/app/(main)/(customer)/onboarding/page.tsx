@@ -14,7 +14,7 @@ export default async function OnboardingPage() {
     .eq('id', user.id)
     .single()
 
-  if (profile?.onboarding_completed) redirect('/')
+  if (profile?.onboarding_completed) redirect('/dashboard')
 
   const accountType = profile?.account_type
   if (accountType !== 'athlete' && accountType !== 'brand') redirect('/login')
