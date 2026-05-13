@@ -48,6 +48,37 @@ export async function signUp(state: FormState, formData: FormData): Promise<Form
   redirect('/onboarding')
 }
 
+export async function signIn(state: FormState, formData: FormData): Promise<FormState> {
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+
+  const errors: NonNullable<NonNullable<FormState>['errors']> = {}
+
+  if (!email) errors.email = 'Email is required.'
+  if (!password) errors.password = 'Password is required.'
+
+  if (Object.keys(errors).length > 0) return { errors }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+  if (error) return { errors: { general: error.message } }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('onboarding_completed')
+    .eq('id', data.user.id)
+    .single()
+
+  redirect(profile?.onboarding_completed ? '/' : '/onboarding')
+}
+
+export async function signOut() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  redirect('/login')
+}
+
 export async function completeOnboarding(
   state: OnboardingFormState,
   formData: FormData
