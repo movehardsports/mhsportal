@@ -26,6 +26,7 @@ export default function Registration() {
               <button
                 type="button"
                 onClick={() => setAccountType('athlete')}
+                aria-pressed={accountType === 'athlete'}
                 className={`flex items-center justify-center rounded-md px-4 py-3 text-sm font-semibold uppercase tracking-wide border transition-colors cursor-pointer ${
                   accountType === 'athlete'
                     ? 'border-indigo-500 bg-indigo-500/10 text-white'
@@ -37,6 +38,7 @@ export default function Registration() {
               <button
                 type="button"
                 onClick={() => setAccountType('brand')}
+                aria-pressed={accountType === 'brand'}
                 className={`flex items-center justify-center rounded-md px-4 py-3 text-sm font-semibold uppercase tracking-wide border transition-colors cursor-pointer ${
                   accountType === 'brand'
                     ? 'border-indigo-500 bg-indigo-500/10 text-white'
