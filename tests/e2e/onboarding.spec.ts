@@ -36,7 +36,7 @@ test.describe('Onboarding — athlete', () => {
     await page.getByLabel('Last name').fill('Doe')
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page).toHaveURL('/')
+    await expect(page).toHaveURL('/dashboard')
   })
 })
 
@@ -46,10 +46,10 @@ test.describe('Onboarding — already completed', () => {
     await page.getByLabel('First name').fill('John')
     await page.getByLabel('Last name').fill('Doe')
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForURL('/')
+    await page.waitForURL('/dashboard')
 
     await page.goto('/onboarding')
-    await expect(page).toHaveURL('/')
+    await expect(page).toHaveURL('/dashboard')
   })
 })
 
@@ -74,6 +74,6 @@ test.describe('Onboarding — brand', () => {
     await page.getByLabel('Brand name').fill('Nike')
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page).toHaveURL('/')
+    await expect(page).toHaveURL('/dashboard')
   })
 })

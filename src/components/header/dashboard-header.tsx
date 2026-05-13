@@ -1,15 +1,13 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
 import { signOut } from '@/app/actions/auth'
-import type { User } from '@supabase/supabase-js'
 
 const navigation = [
-  { name: 'For Athletes', href: '#' },
-  { name: 'For Brands', href: '#' },
+  { name: 'My Campaigns', href: '#' },
+  { name: 'My Profile', href: '#' },
 ]
 
-export default function Header({ user }: { user: User | null }) {
+export default function DashboardHeader() {
   return (
     <Disclosure
       as="nav"
@@ -49,26 +47,15 @@ export default function Header({ user }: { user: User | null }) {
             </div>
           </div>
 
-          <div className="absolute inset-y-0 right-0 hidden sm:flex items-center gap-4 sm:static sm:inset-auto sm:ml-6">
-            {user ? (
-              <>
-                <Link href="/dashboard" className="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wide transition-colors">
-                  DASHBOARD
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wide transition-colors">
-                  SIGN IN
-                </Link>
-                <Link
-                  href="/register"
-                  className="bg-white text-gray-900 px-4 py-1.5 rounded-full text-sm font-semibold uppercase tracking-wide hover:bg-gray-200 transition-colors"
-                >
-                  JOIN
-                </Link>
-              </>
-            )}
+          <div className="absolute inset-y-0 right-0 hidden sm:flex items-center sm:static sm:inset-auto sm:ml-6">
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wide transition-colors cursor-pointer"
+              >
+                SIGN OUT
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -85,31 +72,15 @@ export default function Header({ user }: { user: User | null }) {
               {item.name}
             </DisclosureButton>
           ))}
-          <div className="border-t border-white/10 mt-2 pt-2 space-y-1">
-            {user ? (
-              <>
-                <Link href="/dashboard" className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white">
-                  DASHBOARD
-                </Link>
-                <form action={signOut}>
-                  <button
-                    type="submit"
-                    className="block w-full text-left rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white cursor-pointer"
-                  >
-                    SIGN OUT
-                  </button>
-                </form>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white">
-                  SIGN IN
-                </Link>
-                <Link href="/register" className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white">
-                  JOIN
-                </Link>
-              </>
-            )}
+          <div className="border-t border-white/10 mt-2 pt-2">
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="block w-full text-left rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white cursor-pointer"
+              >
+                SIGN OUT
+              </button>
+            </form>
           </div>
         </div>
       </DisclosurePanel>

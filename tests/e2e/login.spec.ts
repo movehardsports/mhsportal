@@ -17,12 +17,13 @@ async function completeOnboarding(page: Page) {
   await page.getByLabel('First name').fill('Test')
   await page.getByLabel('Last name').fill('User')
   await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForURL('/')
+  await page.waitForURL('/dashboard')
 }
 
 async function signOutUser(page: Page) {
+  await page.goto('/dashboard')
   await page.getByRole('button', { name: /sign out/i }).first().click()
-  await page.waitForURL('/login')
+  await page.waitForURL('/')
 }
 
 test.describe('Login', () => {
@@ -58,6 +59,7 @@ test.describe('Login', () => {
     const email = await registerUser(page, 'Athlete')
     await signOutUser(page)
 
+    await page.goto('/login')
     await page.getByLabel('Email address').fill(email)
     await page.getByLabel('Password').fill('password123')
     await page.getByRole('button', { name: 'Sign In' }).click()
@@ -65,29 +67,30 @@ test.describe('Login', () => {
     await expect(page).toHaveURL('/onboarding')
   })
 
-  test('successful login redirects to / when onboarding is completed', async ({ page }) => {
+  test('successful login redirects to /dashboard when onboarding is completed', async ({ page }) => {
     const email = await registerUser(page, 'Athlete')
     await completeOnboarding(page)
     await signOutUser(page)
 
+    await page.goto('/login')
     await page.getByLabel('Email address').fill(email)
     await page.getByLabel('Password').fill('password123')
     await page.getByRole('button', { name: 'Sign In' }).click()
 
-    await expect(page).toHaveURL('/')
+    await expect(page).toHaveURL('/dashboard')
   })
 })
 
 test.describe('Sign out', () => {
-  test('header shows user email and sign out button when logged in', async ({ page }) => {
-    const email = await registerUser(page, 'Athlete')
-    await expect(page.getByText(email)).toBeVisible()
+  test('dashboard header shows sign out button when logged in', async ({ page }) => {
+    await registerUser(page, 'Athlete')
+    await page.goto('/dashboard')
     await expect(page.getByRole('button', { name: /sign out/i }).first()).toBeVisible()
   })
 
-  test('sign out redirects to /login', async ({ page }) => {
+  test('sign out redirects to homepage', async ({ page }) => {
     await registerUser(page, 'Athlete')
     await signOutUser(page)
-    await expect(page).toHaveURL('/login')
+    await expect(page).toHaveURL('/')
   })
 })
