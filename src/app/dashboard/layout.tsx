@@ -3,7 +3,7 @@ import { getProfile } from '@/lib/dal'
 import Header from '@/components/header/header'
 
 const navigation = [
-  { name: 'My Campaigns', href: '#' },
+  { name: 'My Campaigns', href: '/dashboard/campaigns' },
   { name: 'My Profile', href: '#' },
 ]
 

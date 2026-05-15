@@ -1,0 +1,11 @@
+export type CampaignStatus = 'draft' | 'active' | 'closed' | 'archived'
+
+export type Campaign = {
+  id: string
+  brand_id: string
+  title: string
+  description: string
+  status: CampaignStatus
+  created_at: string
+  updated_at: string
+}
