@@ -1,17 +1,21 @@
 import Header from "@/components/header/header";
-import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/dal";
 
 export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getUser();
+
+  const navigation = [
+    { name: 'For Athletes', href: '#' },
+    { name: 'For Brands', href: '#' },
+  ]
 
   return (
     <>
-      <Header user={user} />
+      <Header navigation={navigation} user={user} />
       {children}
     </>
   );

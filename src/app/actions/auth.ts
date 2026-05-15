@@ -1,69 +1,106 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
+import { z } from 'zod'
 
-type FormState = {
+const SignUpSchema = z.object({
+  accountType: z.enum(['athlete', 'brand'], { error: 'Select account type.' }),
+  email: z.email({ error: 'Enter a valid email address.' }),
+  password: z
+    .string()
+    .min(8, { error: 'Password must be at least 8 characters.' })
+    .regex(/[a-zA-Z]/, { error: 'Password must contain at least one letter.' })
+    .regex(/[0-9]/, { error: 'Password must contain at least one number.' }),
+})
+
+const SignInSchema = z.object({
+  email: z.email({ error: 'Enter a valid email address.' }),
+  password: z.string().min(1, { error: 'Password is required.' }),
+})
+
+const OnboardingAthleteSchema = z.object({
+  first_name: z.string().min(1, { error: 'First name is required.' }).max(100).trim(),
+  last_name: z.string().min(1, { error: 'Last name is required.' }).max(100).trim(),
+})
+
+const OnboardingBrandSchema = z.object({
+  brand_name: z.string().min(1, { error: 'Brand name is required.' }).max(100).trim(),
+})
+
+type SignUpFormState = {
   errors?: {
-    accountType?: string
-    email?: string
-    password?: string
+    accountType?: string[]
+    email?: string[]
+    password?: string[]
+    general?: string
+  }
+} | undefined
+
+type SignInFormState = {
+  errors?: {
+    email?: string[]
+    password?: string[]
     general?: string
   }
 } | undefined
 
 type OnboardingFormState = {
   errors?: {
-    first_name?: string
-    last_name?: string
-    brand_name?: string
+    first_name?: string[]
+    last_name?: string[]
+    brand_name?: string[]
     general?: string
   }
 } | undefined
 
-export async function signUp(state: FormState, formData: FormData): Promise<FormState> {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-  const accountType = formData.get('account-type') as string
+export async function signUp(state: SignUpFormState, formData: FormData): Promise<SignUpFormState> {
+  const parsed = SignUpSchema.safeParse({
+    accountType: formData.get('account-type'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+  })
 
-  const errors: NonNullable<NonNullable<FormState>['errors']> = {}
+  if (!parsed.success) {
+    return { errors: parsed.error.flatten().fieldErrors }
+  }
 
-  if (!accountType) errors.accountType = 'Select account type.'
-  if (!email) errors.email = 'Email is required.'
-  if (!password || password.length < 8) errors.password = 'Password must be at least 8 characters.'
-
-  if (Object.keys(errors).length > 0) return { errors }
+  const { accountType, email, password } = parsed.data
 
   const supabase = await createClient()
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: { account_type: accountType },
-    },
+    options: { data: { account_type: accountType } },
   })
 
-  if (error) return { errors: { general: error.message } }
+  if (error) {
+    console.error('[signUp]', error.code, error.message)
+    return { errors: { general: 'Could not create account. Please try again.' } }
+  }
 
   redirect('/onboarding')
 }
 
-export async function signIn(state: FormState, formData: FormData): Promise<FormState> {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+export async function signIn(state: SignInFormState, formData: FormData): Promise<SignInFormState> {
+  const parsed = SignInSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password'),
+  })
 
-  const errors: NonNullable<NonNullable<FormState>['errors']> = {}
+  if (!parsed.success) {
+    return { errors: parsed.error.flatten().fieldErrors }
+  }
 
-  if (!email) errors.email = 'Email is required.'
-  if (!password) errors.password = 'Password is required.'
-
-  if (Object.keys(errors).length > 0) return { errors }
+  const { email, password } = parsed.data
 
   const supabase = await createClient()
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
-  if (error) return { errors: { general: error.message } }
+  if (error) {
+    console.error('[signIn]', error.code, error.message)
+    return { errors: { general: 'Invalid email or password.' } }
+  }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -77,12 +114,6 @@ export async function signIn(state: FormState, formData: FormData): Promise<Form
 export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
-
-  const cookieStore = await cookies()
-  cookieStore.getAll()
-    .filter(c => c.name.startsWith('sb-'))
-    .forEach(c => cookieStore.delete(c.name))
-
   redirect('/')
 }
 
@@ -100,36 +131,39 @@ export async function completeOnboarding(
     return { errors: { general: 'Invalid account type.' } }
   }
 
-  const errors: NonNullable<NonNullable<OnboardingFormState>['errors']> = {}
-
   if (accountType === 'athlete') {
-    const firstName = (formData.get('first_name') as string)?.trim()
-    const lastName = (formData.get('last_name') as string)?.trim()
+    const parsed = OnboardingAthleteSchema.safeParse({
+      first_name: formData.get('first_name'),
+      last_name: formData.get('last_name'),
+    })
 
-    if (!firstName) errors.first_name = 'First name is required.'
-    if (!lastName) errors.last_name = 'Last name is required.'
-
-    if (Object.keys(errors).length > 0) return { errors }
+    if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors }
 
     const { error } = await supabase
       .from('profiles')
-      .update({ first_name: firstName, last_name: lastName, onboarding_completed: true })
+      .update({ ...parsed.data, onboarding_completed: true })
       .eq('id', user.id)
 
-    if (error) return { errors: { general: error.message } }
+    if (error) {
+      console.error('[completeOnboarding]', error.message)
+      return { errors: { general: 'Could not save profile. Please try again.' } }
+    }
   } else {
-    const brandName = (formData.get('brand_name') as string)?.trim()
+    const parsed = OnboardingBrandSchema.safeParse({
+      brand_name: formData.get('brand_name'),
+    })
 
-    if (!brandName) errors.brand_name = 'Brand name is required.'
-
-    if (Object.keys(errors).length > 0) return { errors }
+    if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors }
 
     const { error } = await supabase
       .from('profiles')
-      .update({ brand_name: brandName, onboarding_completed: true })
+      .update({ ...parsed.data, onboarding_completed: true })
       .eq('id', user.id)
 
-    if (error) return { errors: { general: error.message } }
+    if (error) {
+      console.error('[completeOnboarding]', error.message)
+      return { errors: { general: 'Could not save profile. Please try again.' } }
+    }
   }
 
   redirect('/dashboard')
