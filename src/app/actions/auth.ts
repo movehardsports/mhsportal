@@ -62,7 +62,7 @@ export async function signUp(state: SignUpFormState, formData: FormData): Promis
   })
 
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors }
+    return { errors: z.flattenError(parsed.error).fieldErrors }
   }
 
   const { accountType, email, password } = parsed.data
@@ -89,7 +89,7 @@ export async function signIn(state: SignInFormState, formData: FormData): Promis
   })
 
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors }
+    return { errors: z.flattenError(parsed.error).fieldErrors }
   }
 
   const { email, password } = parsed.data
@@ -137,7 +137,7 @@ export async function completeOnboarding(
       last_name: formData.get('last_name'),
     })
 
-    if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors }
+    if (!parsed.success) return { errors: z.flattenError(parsed.error).fieldErrors }
 
     const { error } = await supabase
       .from('profiles')
@@ -153,7 +153,7 @@ export async function completeOnboarding(
       brand_name: formData.get('brand_name'),
     })
 
-    if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors }
+    if (!parsed.success) return { errors: z.flattenError(parsed.error).fieldErrors }
 
     const { error } = await supabase
       .from('profiles')

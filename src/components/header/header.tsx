@@ -40,13 +40,13 @@ export default function Header({ navigation, user, showSignOut }: HeaderProps) {
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className="text-gray-300 hover:bg-white/5 hover:text-white rounded-md px-3 py-2 text-sm font-medium uppercase tracking-wide"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -94,7 +94,7 @@ export default function Header({ navigation, user, showSignOut }: HeaderProps) {
           {navigation.map((item) => (
             <DisclosureButton
               key={item.name}
-              as="a"
+              as={Link}
               href={item.href}
               className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white"
             >
