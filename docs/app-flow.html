@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>MHS — Dokumentacja flow aplikacji</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #1a1a2e;
+      background: #fff;
+      padding: 0;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: #fff;
+      page-break-after: always;
+      text-align: center;
+      padding: 60px 40px;
+    }
+    .cover .logo {
+      width: 64px; height: 64px;
+      background: #6366f1;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 900; color: #fff;
+      margin: 0 auto 32px;
+    }
+    .cover h1 { font-size: 42px; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+    .cover .subtitle { font-size: 18px; color: #a5b4fc; margin-bottom: 40px; }
+    .cover .meta { font-size: 12px; color: #818cf8; }
+    .cover .badge {
+      display: inline-block;
+      margin: 6px 4px;
+      padding: 4px 14px;
+      border-radius: 100px;
+      border: 1px solid rgba(165,180,252,.3);
+      font-size: 11px;
+      color: #c7d2fe;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 56px 64px;
+    }
+    @media print {
+      .page { padding: 40px 48px; }
+    }
+
+    /* ── Typography ── */
+    h1.section-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid #6366f1;
+    }
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #312e81;
+      margin: 32px 0 12px;
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #4338ca;
+      margin: 20px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    p { margin-bottom: 10px; color: #374151; }
+
+    /* ── Dividers ── */
+    .page-break { page-break-before: always; }
+
+    /* ── Chips / badges ── */
+    .chip {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin: 2px 3px 2px 0;
+    }
+    .chip-indigo { background: #e0e7ff; color: #4338ca; }
+    .chip-green  { background: #dcfce7; color: #166534; }
+    .chip-red    { background: #fee2e2; color: #991b1b; }
+    .chip-gray   { background: #f3f4f6; color: #374151; }
+    .chip-amber  { background: #fef3c7; color: #92400e; }
+
+    /* ── Cards ── */
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      background: #fafafa;
+    }
+    .card-purple {
+      border-left: 4px solid #6366f1;
+      background: #f5f3ff;
+    }
+    .card-green {
+      border-left: 4px solid #22c55e;
+      background: #f0fdf4;
+    }
+    .card-red {
+      border-left: 4px solid #ef4444;
+      background: #fef2f2;
+    }
+    .card-amber {
+      border-left: 4px solid #f59e0b;
+      background: #fffbeb;
+    }
+
+    /* ── Route table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 12.5px;
+    }
+    th {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+    th:first-child { border-radius: 8px 0 0 0; }
+    th:last-child  { border-radius: 0 8px 0 0; }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #f9fafb; }
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11.5px;
+      background: #ede9fe;
+      color: #4338ca;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    /* ── Flow diagrams ── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 16px 0;
+    }
+    .flow-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+    .flow-node {
+      background: #6366f1;
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      min-width: 130px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(99,102,241,.25);
+    }
+    .flow-node.gray { background: #6b7280; box-shadow: 0 2px 8px rgba(107,114,128,.2); }
+    .flow-node.green { background: #22c55e; box-shadow: 0 2px 8px rgba(34,197,94,.2); }
+    .flow-node.red { background: #ef4444; box-shadow: 0 2px 8px rgba(239,68,68,.2); }
+    .flow-node.amber { background: #f59e0b; color: #1a1a2e; box-shadow: 0 2px 8px rgba(245,158,11,.2); }
+    .flow-arrow {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #9ca3af;
+      padding: 0 6px;
+    }
+    .flow-arrow.down {
+      flex-direction: column;
+      padding: 4px 0;
+      font-size: 14px;
+    }
+    .flow-label {
+      font-size: 10px;
+      color: #6b7280;
+      text-align: center;
+      padding: 0 4px;
+      font-style: italic;
+    }
+
+    /* ── Section separator ── */
+    .sep {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 28px 0;
+    }
+
+    /* ── Two-col grid ── */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 16px 0; }
+
+    /* ── Type model box ── */
+    .type-box {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
+      background: #1e1b4b;
+      color: #c7d2fe;
+      border-radius: 10px;
+      padding: 16px 18px;
+      line-height: 1.8;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+    .type-box .kw { color: #a5b4fc; }
+    .type-box .ty { color: #6ee7b7; }
+    .type-box .str { color: #fde68a; }
+    .type-box .cm { color: #64748b; }
+
+    /* ── Step list ── */
+    .steps { list-style: none; padding: 0; margin: 12px 0; }
+    .steps li {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px dashed #f0f0f0;
+    }
+    .steps li:last-child { border-bottom: none; }
+    .step-num {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      background: #6366f1;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Bullet list ── */
+    ul.bullet { padding-left: 20px; margin: 8px 0; }
+    ul.bullet li { margin: 4px 0; color: #374151; }
+
+    /* ── Page number footer (print) ── */
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ COVER ═══════════════════════════════ -->
+<div class="cover">
+  <div class="logo">M</div>
+  <h1>MoveHard Sports</h1>
+  <div class="subtitle">Dokumentacja flow aplikacji i widoków</div>
+
+  <div style="margin: 24px 0;">
+    <span class="badge">Next.js 16 App Router</span>
+    <span class="badge">Supabase Auth</span>
+    <span class="badge">TypeScript</span>
+    <span class="badge">Tailwind CSS</span>
+    <span class="badge">Zod</span>
+  </div>
+
+  <div class="meta">
+    Data: 15 maja 2026 &nbsp;|&nbsp; Autor: Dominik Kwaczynski
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SPIS TREŚCI ═══════════════════════════ -->
+<div class="page">
+  <h1 class="section-title">Spis treści</h1>
+
+  <table>
+    <tr><th>#</th><th>Sekcja</th></tr>
+    <tr><td>1</td><td>Przegląd systemu i architektura</td></tr>
+    <tr><td>2</td><td>Modele danych</td></tr>
+    <tr><td>3</td><td>Mapa routingu</td></tr>
+    <tr><td>4</td><td>Flow: Nowy użytkownik (rejestracja → onboarding)</td></tr>
+    <tr><td>5</td><td>Flow: Logowanie</td></tr>
+    <tr><td>6</td><td>Flow: Dashboard — Brand</td></tr>
+    <tr><td>7</td><td>Flow: Kampanie — CRUD</td></tr>
+    <tr><td>8</td><td>Guardy i przekierowania</td></tr>
+    <tr><td>9</td><td>Server Actions</td></tr>
+    <tr><td>10</td><td>Opisy widoków</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════ 1. PRZEGLĄD ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">1. Przegląd systemu i architektura</h1>
+
+  <p>
+    <strong>MHS (MoveHard Sports)</strong> to platforma łącząca <strong>marki sportowe</strong>
+    z <strong>atletami</strong>. Marki publikują kampanie, atleci (w przyszłości) mogą
+    aplikować. Aplikacja zbudowana jest w Next.js 16 z App Routerem po stronie serwera,
+    autoryzacja i baza danych oparte są na <strong>Supabase</strong>.
+  </p>
+
+  <h2>Stack technologiczny</h2>
+  <div class="grid3">
+    <div class="card card-purple">
+      <h3 style="margin-top:0">Frontend</h3>
+      <ul class="bullet">
+        <li>Next.js 16 App Router</li>
+        <li>React Server Components</li>
+        <li>Tailwind CSS</li>
+        <li>Headless UI</li>
+        <li>Heroicons</li>
+      </ul>
+    </div>
+    <div class="card card-green">
+      <h3 style="margin-top:0">Backend</h3>
+      <ul class="bullet">
+        <li>Next.js Server Actions</li>
+        <li>Supabase (Auth + DB)</li>
+        <li>Zod (walidacja)</li>
+        <li>DAL (Data Access Layer)</li>
+        <li>React <code>cache()</code></li>
+      </ul>
+    </div>
+    <div class="card card-amber">
+      <h3 style="margin-top:0">Auth</h3>
+      <ul class="bullet">
+        <li>Supabase Auth</li>
+        <li>Cookie-based sessions</li>
+        <li>SSR middleware</li>
+        <li>Server-only DAL</li>
+        <li>RLS w Supabase</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Warstwy aplikacji</h2>
+  <div class="flow">
+    <div class="flow-row" style="justify-content:center;">
+      <div class="flow-node" style="min-width:600px; background:#1a1a2e;">Przeglądarka → żądanie HTTP</div>
+    </div>
+    <div style="text-align:center; color:#9ca3af; font-size:20px; padding:4px 0;">↓</div>
+    <div class="flow-row" style="justify-content:center;">
+      <div class="flow-node" style="min-width:600px; background:#312e81;">Next.js Middleware — updateSession (odświeżenie sesji Supabase)</div>
+    </div>
+    <div style="text-align:center; color:#9ca3af; font-size:20px; padding:4px 0;">↓</div>
+    <div class="flow-row" style="justify-content:center;">
+      <div class="flow-node" style="min-width:600px;">Layout Guard — Server Component (getProfile, redirect)</div>
+    </div>
+    <div style="text-align:center; color:#9ca3af; font-size:20px; padding:4px 0;">↓</div>
+    <div class="flow-row" style="justify-content:center; gap:16px;">
+      <div class="flow-node" style="min-width:180px; background:#4338ca;">Page — RSC</div>
+      <div class="flow-node" style="min-width:180px; background:#4338ca;">DAL (getProfile, getCampaigns…)</div>
+      <div class="flow-node" style="min-width:180px; background:#4338ca;">Client Component</div>
+    </div>
+    <div style="text-align:center; color:#9ca3af; font-size:20px; padding:4px 0;">↓</div>
+    <div class="flow-row" style="justify-content:center;">
+      <div class="flow-node" style="min-width:600px; background:#166534; box-shadow:0 2px 8px rgba(22,101,52,.25);">Server Action → Supabase API</div>
+    </div>
+  </div>
+
+  <h2>Typy kont</h2>
+  <div class="grid2">
+    <div class="card card-purple">
+      <h3 style="margin-top:0">Atleta <code>athlete</code></h3>
+      <ul class="bullet">
+        <li>Imię i nazwisko (first_name, last_name)</li>
+        <li>Dyscypliny sportowe</li>
+        <li>W przyszłości: aplikowanie na kampanie</li>
+      </ul>
+    </div>
+    <div class="card card-green">
+      <h3 style="margin-top:0">Marka <code>brand</code></h3>
+      <ul class="bullet">
+        <li>Nazwa marki (brand_name)</li>
+        <li>Dyscypliny zainteresowań</li>
+        <li>CRUD kampanii marketingowych</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ 2. MODELE DANYCH ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">2. Modele danych</h1>
+
+  <h2>Profile (discriminated union)</h2>
+  <p>Profil użytkownika jest przechowywany w tabeli <code>profiles</code> w Supabase. TypeScript używa discriminated union na polu <code>account_type</code>.</p>
+
+  <div class="type-box">
+    <span class="kw">type</span> <span class="ty">BaseProfile</span> = {<br>
+    &nbsp;&nbsp;id: <span class="ty">string</span><br>
+    &nbsp;&nbsp;account_type: <span class="str">'athlete'</span> | <span class="str">'brand'</span><br>
+    &nbsp;&nbsp;onboarding_completed: <span class="ty">boolean</span><br>
+    &nbsp;&nbsp;created_at: <span class="ty">string</span><br>
+    &nbsp;&nbsp;updated_at: <span class="ty">string</span><br>
+    &nbsp;&nbsp;disciplines: <span class="ty">Discipline[]</span> | <span class="ty">null</span><br>
+    }<br><br>
+    <span class="kw">type</span> <span class="ty">AthleteProfile</span> = BaseProfile &amp; {<br>
+    &nbsp;&nbsp;account_type: <span class="str">'athlete'</span><br>
+    &nbsp;&nbsp;first_name: <span class="ty">string</span><br>
+    &nbsp;&nbsp;last_name: <span class="ty">string</span><br>
+    &nbsp;&nbsp;brand_name: <span class="ty">null</span><br>
+    }<br><br>
+    <span class="kw">type</span> <span class="ty">BrandProfile</span> = BaseProfile &amp; {<br>
+    &nbsp;&nbsp;account_type: <span class="str">'brand'</span><br>
+    &nbsp;&nbsp;brand_name: <span class="ty">string</span><br>
+    &nbsp;&nbsp;first_name: <span class="ty">null</span><br>
+    &nbsp;&nbsp;last_name: <span class="ty">null</span><br>
+    }<br><br>
+    <span class="kw">type</span> <span class="ty">Profile</span> = <span class="ty">AthleteProfile</span> | <span class="ty">BrandProfile</span>
+  </div>
+
+  <h2>Campaign</h2>
+  <div class="type-box">
+    <span class="kw">type</span> <span class="ty">CampaignStatus</span> = <span class="str">'draft'</span> | <span class="str">'active'</span> | <span class="str">'closed'</span> | <span class="str">'archived'</span><br><br>
+    <span class="kw">type</span> <span class="ty">Campaign</span> = {<br>
+    &nbsp;&nbsp;id: <span class="ty">string</span><br>
+    &nbsp;&nbsp;brand_id: <span class="ty">string</span> &nbsp;&nbsp;<span class="cm">// FK → profiles.id</span><br>
+    &nbsp;&nbsp;title: <span class="ty">string</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// max 200 znaków</span><br>
+    &nbsp;&nbsp;description: <span class="ty">string</span> <span class="cm">// max 5000 znaków</span><br>
+    &nbsp;&nbsp;status: <span class="ty">CampaignStatus</span><br>
+    &nbsp;&nbsp;disciplines: <span class="ty">Discipline[]</span> | <span class="ty">null</span><br>
+    &nbsp;&nbsp;created_at: <span class="ty">string</span><br>
+    &nbsp;&nbsp;updated_at: <span class="ty">string</span><br>
+    }
+  </div>
+
+  <h2>Discipline</h2>
+  <div class="type-box">
+    <span class="kw">const</span> DISCIPLINE_IDS = [<span class="str">'crossfit'</span>, <span class="str">'triathlon'</span>, <span class="str">'motorsports'</span>] <span class="kw">as const</span><br><br>
+    <span class="kw">type</span> <span class="ty">Discipline</span> = <span class="str">'crossfit'</span> | <span class="str">'triathlon'</span> | <span class="str">'motorsports'</span>
+  </div>
+
+  <h2>Walidacja (Zod schemas)</h2>
+  <table>
+    <tr><th>Schema</th><th>Pole</th><th>Reguły</th></tr>
+    <tr><td rowspan="3"><strong>SignUp</strong></td><td><code>email</code></td><td>email valid</td></tr>
+    <tr><td><code>password</code></td><td>min 8 znaków, litera + cyfra</td></tr>
+    <tr><td><code>accountType</code></td><td><code>'athlete' | 'brand'</code></td></tr>
+    <tr><td rowspan="2"><strong>SignIn</strong></td><td><code>email</code></td><td>email valid</td></tr>
+    <tr><td><code>password</code></td><td>min 1 znak</td></tr>
+    <tr><td rowspan="3"><strong>OnboardingAthlete</strong></td><td><code>first_name</code></td><td>wymagane, max 100</td></tr>
+    <tr><td><code>last_name</code></td><td>wymagane, max 100</td></tr>
+    <tr><td><code>disciplines</code></td><td>min 1 dyscyplina</td></tr>
+    <tr><td rowspan="2"><strong>OnboardingBrand</strong></td><td><code>brand_name</code></td><td>wymagane, max 100</td></tr>
+    <tr><td><code>disciplines</code></td><td>min 1 dyscyplina</td></tr>
+    <tr><td rowspan="3"><strong>Campaign</strong></td><td><code>title</code></td><td>min 3, max 200 znaków</td></tr>
+    <tr><td><code>description</code></td><td>min 10, max 5000 znaków</td></tr>
+    <tr><td><code>disciplines</code></td><td>min 1 dyscyplina</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════ 3. ROUTING ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">3. Mapa routingu</h1>
+
+  <h2>Struktura katalogów (App Router)</h2>
+  <div class="type-box" style="font-size:12px; line-height:2;">
+    src/app/<br>
+    ├── layout.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Root layout (html, body, fonty)</span><br>
+    ├── (main)/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Publiczne strony + nagłówek</span><br>
+    │&nbsp;&nbsp;&nbsp;├── layout.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Header z nawigacją publiczną</span><br>
+    │&nbsp;&nbsp;&nbsp;├── page.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// / (homepage)</span><br>
+    │&nbsp;&nbsp;&nbsp;└── (customer)/<br>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── login/page.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// /login</span><br>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── register/page.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// /register</span><br>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── onboarding/<br>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── page.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// /onboarding</span><br>
+    │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── onboarding-form.tsx<br>
+    └── dashboard/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Chroniona strefa (auth required)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;├── layout.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Guard: login + onboarding</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;├── page.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// /dashboard</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;└── (brand)/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Guard: tylko account_type='brand'</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── layout.tsx<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── campaigns/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── page.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// /dashboard/campaigns</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── new/page.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// /dashboard/campaigns/new</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── [id]/<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── page.tsx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// /dashboard/campaigns/:id</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── edit/page.tsx &nbsp;&nbsp;<span class="cm">// /dashboard/campaigns/:id/edit</span>
+  </div>
+
+  <h2>Tabela routów</h2>
+  <table>
+    <tr><th>Ścieżka URL</th><th>Komponent</th><th>Guard</th><th>Dostęp</th></tr>
+    <tr>
+      <td><code>/</code></td>
+      <td><code>(main)/page.tsx</code></td>
+      <td>brak</td>
+      <td><span class="chip chip-gray">Publiczny</span></td>
+    </tr>
+    <tr>
+      <td><code>/login</code></td>
+      <td><code>(customer)/login/page.tsx</code></td>
+      <td>brak</td>
+      <td><span class="chip chip-gray">Publiczny</span></td>
+    </tr>
+    <tr>
+      <td><code>/register</code></td>
+      <td><code>(customer)/register/page.tsx</code></td>
+      <td>brak</td>
+      <td><span class="chip chip-gray">Publiczny</span></td>
+    </tr>
+    <tr>
+      <td><code>/onboarding</code></td>
+      <td><code>(customer)/onboarding/page.tsx</code></td>
+      <td>profile ≠ null; onboarding_completed=false</td>
+      <td><span class="chip chip-indigo">Auth required</span></td>
+    </tr>
+    <tr>
+      <td><code>/dashboard</code></td>
+      <td><code>dashboard/page.tsx</code></td>
+      <td>profile; onboarding_completed=true</td>
+      <td><span class="chip chip-indigo">Auth required</span></td>
+    </tr>
+    <tr>
+      <td><code>/dashboard/campaigns</code></td>
+      <td><code>(brand)/campaigns/page.tsx</code></td>
+      <td>profile; brand only</td>
+      <td><span class="chip chip-green">Brand only</span></td>
+    </tr>
+    <tr>
+      <td><code>/dashboard/campaigns/new</code></td>
+      <td><code>(brand)/campaigns/new/page.tsx</code></td>
+      <td>profile; brand only</td>
+      <td><span class="chip chip-green">Brand only</span></td>
+    </tr>
+    <tr>
+      <td><code>/dashboard/campaigns/:id</code></td>
+      <td><code>(brand)/campaigns/[id]/page.tsx</code></td>
+      <td>profile; brand only; campaign.brand_id = user.id</td>
+      <td><span class="chip chip-green">Brand only</span></td>
+    </tr>
+    <tr>
+      <td><code>/dashboard/campaigns/:id/edit</code></td>
+      <td><code>(brand)/campaigns/[id]/edit/page.tsx</code></td>
+      <td>profile; brand only; campaign.brand_id = user.id</td>
+      <td><span class="chip chip-green">Brand only</span></td>
+    </tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════ 4. FLOW REJESTRACJA ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">4. Flow: Nowy użytkownik (rejestracja → onboarding)</h1>
+
+  <h2>Diagram flow</h2>
+
+  <div class="flow" style="align-items:center;">
+    <div class="flow-node gray" style="min-width:260px;">Strona główna <code>/</code></div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓ <span style="font-size:11px;font-style:italic;">klik „JOIN"</span></div>
+
+    <div class="flow-node" style="min-width:260px;">/register</div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓ <span style="font-size:11px;font-style:italic;">wybór typu konta + email + hasło</span></div>
+
+    <div class="flow-row" style="gap:16px;align-items:flex-start;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div class="flow-node red" style="min-width:200px;">Błąd walidacji Zod</div>
+        <div style="font-size:11px;color:#9ca3af;text-align:center;">Wyświetl komunikaty<br>przy polach formularza</div>
+        <div class="flow-arrow">↩</div>
+      </div>
+      <div class="flow-arrow" style="padding-top:12px;">→</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div class="flow-node green" style="min-width:200px;">Supabase auth.signUp()</div>
+        <div style="font-size:11px;color:#9ca3af;text-align:center;">Tworzy user + profil<br>(trigger DB)</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓ <span style="font-size:11px;font-style:italic;">redirect('/onboarding')</span></div>
+
+    <div class="flow-node" style="min-width:260px;">/onboarding</div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓ <span style="font-size:11px;font-style:italic;">wypełnienie profilu</span></div>
+
+    <div class="flow-row" style="gap:40px;justify-content:center;align-items:flex-start;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="chip chip-indigo" style="font-size:12px;padding:4px 12px;">account_type = athlete</div>
+        <div class="card card-purple" style="width:220px;margin:0;padding:14px;">
+          <ul class="bullet">
+            <li>First name (wymagane)</li>
+            <li>Last name (wymagane)</li>
+            <li>Disciplines (min 1)</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="chip chip-green" style="font-size:12px;padding:4px 12px;">account_type = brand</div>
+        <div class="card card-green" style="width:220px;margin:0;padding:14px;">
+          <ul class="bullet">
+            <li>Brand name (wymagane)</li>
+            <li>Disciplines (min 1)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓ <span style="font-size:11px;font-style:italic;">profiles.update(onboarding_completed=true) → redirect('/dashboard')</span></div>
+
+    <div class="flow-node green" style="min-width:260px;">/dashboard</div>
+  </div>
+
+  <h2>Szczegóły kroku: /register</h2>
+  <ol class="steps">
+    <li><div class="step-num">1</div><div>Użytkownik wybiera typ konta przez przyciski <strong>Athlete</strong> / <strong>Brand</strong> — wartość trafia do ukrytego pola <code>account-type</code></div></li>
+    <li><div class="step-num">2</div><div>Wpisuje email i hasło (min 8 znaków, litera + cyfra)</div></li>
+    <li><div class="step-num">3</div><div>Submit wywołuje Server Action <code>signUp</code>. Zod waliduje dane — błędy wracają jako <code>state.errors</code> i wyświetlają się przy polach</div></li>
+    <li><div class="step-num">4</div><div>Sukces: <code>supabase.auth.signUp()</code> z metadaną <code>account_type</code> w <code>user_metadata</code></div></li>
+    <li><div class="step-num">5</div><div>Automatyczny redirect na <code>/onboarding</code></div></li>
+  </ol>
+
+  <h2>Szczegóły kroku: /onboarding</h2>
+  <ol class="steps">
+    <li><div class="step-num">1</div><div>Server Component pobiera profil przez DAL. Jeśli brak profilu — redirect do <code>/login</code>. Jeśli onboarding już ukończony — redirect do <code>/dashboard</code></div></li>
+    <li><div class="step-num">2</div><div>Formularz renderuje się warunkowo wg <code>account_type</code></div></li>
+    <li><div class="step-num">3</div><div>Komponent <strong>DisciplinePicker</strong> — toggle buttons, przechowuje stan w <code>useState(Set)</code>, emituje ukryte pola <code>input[name=disciplines]</code></div></li>
+    <li><div class="step-num">4</div><div>Server Action <code>completeOnboarding</code> waliduje i wywołuje <code>profiles.update()</code> z polami odpowiednimi dla typu konta</div></li>
+    <li><div class="step-num">5</div><div>Redirect na <code>/dashboard</code></div></li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════ 5. FLOW LOGOWANIE ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">5. Flow: Logowanie</h1>
+
+  <div class="flow" style="align-items:center;">
+    <div class="flow-node gray" style="min-width:300px;">Klik „SIGN IN" w nagłówku</div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓</div>
+
+    <div class="flow-node" style="min-width:300px;">/login — formularz email + hasło</div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓ <span style="font-size:11px;font-style:italic;">Server Action: signIn</span></div>
+
+    <div class="flow-row" style="gap:20px;justify-content:center;align-items:flex-start;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:180px;">
+        <div class="flow-node red" style="min-width:180px;">Błąd walidacji / złe dane</div>
+        <div style="font-size:11px;color:#9ca3af;text-align:center;">„Invalid email or password."</div>
+      </div>
+      <div class="flow-arrow" style="padding-top:12px;">→</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:180px;">
+        <div class="flow-node green" style="min-width:180px;">signInWithPassword() OK</div>
+        <div style="font-size:11px;color:#9ca3af;text-align:center;">Odczyt profilu z DB</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓</div>
+
+    <div class="flow-row" style="gap:40px;justify-content:center;align-items:flex-start;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div style="font-size:11px;color:#6b7280;font-style:italic;">onboarding_completed = false</div>
+        <div class="flow-node amber" style="min-width:200px;">/onboarding</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div style="font-size:11px;color:#6b7280;font-style:italic;">onboarding_completed = true</div>
+        <div class="flow-node green" style="min-width:200px;">/dashboard</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Obsługa błędów</h2>
+  <div class="grid2">
+    <div class="card card-red">
+      <h3 style="margin-top:0;color:#991b1b;">Błędy walidacji Zod</h3>
+      <ul class="bullet">
+        <li>Nieprawidłowy format email</li>
+        <li>Puste hasło</li>
+      </ul>
+      <p style="margin-top:8px;font-size:11px;color:#7f1d1d;">Wyświetlane przy konkretnych polach formularza</p>
+    </div>
+    <div class="card card-red">
+      <h3 style="margin-top:0;color:#991b1b;">Błąd Supabase</h3>
+      <ul class="bullet">
+        <li>Nieprawidłowe dane logowania</li>
+        <li>Konto nie istnieje</li>
+      </ul>
+      <p style="margin-top:8px;font-size:11px;color:#7f1d1d;">Ogólny komunikat: „Invalid email or password."</p>
+    </div>
+  </div>
+
+  <h2>Wylogowanie</h2>
+  <ol class="steps">
+    <li><div class="step-num">1</div><div>Przycisk „SIGN OUT" w headerze dashboardu (widoczny tylko gdy <code>showSignOut=true</code>)</div></li>
+    <li><div class="step-num">2</div><div>Form POST wywołuje Server Action <code>signOut</code></div></li>
+    <li><div class="step-num">3</div><div><code>supabase.auth.signOut()</code> → czyszczenie cookies</div></li>
+    <li><div class="step-num">4</div><div>Redirect na <code>/</code> (homepage)</div></li>
+  </ol>
+
+  <h2>Zachowanie nagłówka (Header)</h2>
+  <table>
+    <tr><th>Stan sesji</th><th>Prawa strona nagłówka</th></tr>
+    <tr><td>Niezalogowany (strona publiczna)</td><td>Przyciski: <code>SIGN IN</code>, <code>JOIN</code></td></tr>
+    <tr><td>Zalogowany (strona publiczna)</td><td>Link: <code>DASHBOARD</code></td></tr>
+    <tr><td>Dashboard (<code>showSignOut=true</code>)</td><td>Przycisk: <code>SIGN OUT</code></td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════ 6. FLOW DASHBOARD ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">6. Flow: Dashboard — Brand</h1>
+
+  <h2>Warstwy ochrony (guards)</h2>
+
+  <div class="flow" style="align-items:center;">
+    <div class="flow-node gray" style="min-width:380px;">Żądanie do <code>/dashboard/**</code></div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓</div>
+
+    <div class="card card-amber" style="width:480px;margin:0 auto 8px;">
+      <strong>dashboard/layout.tsx</strong> — Guard 1<br>
+      <span style="font-size:11px;">Pobiera profil (DAL). Jeśli brak → <code>/login</code>. Jeśli onboarding niekompletny → <code>/onboarding</code>.</span>
+    </div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓ <span style="font-size:11px;font-style:italic;">profil OK + onboarding ukończony</span></div>
+
+    <div class="card card-amber" style="width:480px;margin:0 auto 8px;">
+      <strong>dashboard/(brand)/layout.tsx</strong> — Guard 2<br>
+      <span style="font-size:11px;">Sprawdza <code>profile.account_type === 'brand'</code>. Jeśli nie → <code>/dashboard</code>.</span>
+    </div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓ <span style="font-size:11px;font-style:italic;">account_type = 'brand'</span></div>
+
+    <div class="flow-node" style="min-width:380px;">Renderowanie widoku kampanii</div>
+  </div>
+
+  <h2>Nawigacja w dashboardzie</h2>
+  <p>Header w layoucie dashboard renderuje nawigację z linkami:</p>
+  <div class="grid2">
+    <div class="card card-purple">
+      <code>My Campaigns → /dashboard/campaigns</code>
+      <p style="margin-top:8px;font-size:11px;color:#4338ca;">Lista kampanii marki</p>
+    </div>
+    <div class="card card-purple">
+      <code>My Profile → #</code>
+      <p style="margin-top:8px;font-size:11px;color:#4338ca;">Planowane — jeszcze niezaimplementowane</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ 7. FLOW KAMPANIE ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">7. Flow: Kampanie — CRUD</h1>
+
+  <h2>Lista kampanii <code>/dashboard/campaigns</code></h2>
+  <div class="flow" style="align-items:center;">
+    <div class="flow-node gray" style="min-width:320px;">getCampaigns() — DAL (brand_id = user.id)</div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓</div>
+    <div class="flow-row" style="gap:30px;justify-content:center;">
+      <div class="flow-node amber" style="min-width:200px;">Brak kampanii → CTA: „Create your first campaign"</div>
+      <div class="flow-node green" style="min-width:200px;">Lista kart kampanii z: tytułem, opisem (clamp), statusem, linkiem Preview</div>
+    </div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:4px 0;">↓ <span style="font-size:11px;font-style:italic;">klik „Preview"</span></div>
+    <div class="flow-node" style="min-width:320px;">/dashboard/campaigns/:id</div>
+  </div>
+
+  <hr class="sep">
+
+  <h2>Tworzenie kampanii <code>/dashboard/campaigns/new</code></h2>
+  <ol class="steps">
+    <li><div class="step-num">1</div><div>Klik „New Campaign" na liście. Strona renderuje <strong>CampaignForm</strong> bez danych wstępnych</div></li>
+    <li><div class="step-num">2</div><div>Pola: <strong>Title</strong> (max 200), <strong>Description</strong> (textarea, max 5000), <strong>DisciplinePicker</strong> (min 1)</div></li>
+    <li><div class="step-num">3</div><div>Server Action <code>createCampaign</code>: walidacja Zod → sprawdzenie profilu brand → <code>campaigns.insert()</code></div></li>
+    <li><div class="step-num">4</div><div>Sukces: redirect na <code>/dashboard/campaigns</code></div></li>
+  </ol>
+
+  <hr class="sep">
+
+  <h2>Szczegóły kampanii <code>/dashboard/campaigns/:id</code></h2>
+  <p>Server Component. Pobiera kampanię przez <code>getCampaign(id)</code> (filtr: <code>brand_id = user.id</code>). Jeśli nie znaleziono — <code>notFound()</code>.</p>
+  <div class="card" style="margin:12px 0;">
+    <strong>Wyświetla:</strong>
+    <ul class="bullet" style="margin-top:8px;">
+      <li>Tytuł + status (badge)</li>
+      <li>Opis (whitespace-pre-wrap)</li>
+      <li>Dyscypliny jako pill-badges z labelami z <code>DISCIPLINES</code></li>
+      <li>Daty: Created, Last updated</li>
+      <li>Przyciski akcji: <strong>Edit</strong> (link) + <strong>Delete</strong> (form + confirm dialog)</li>
+    </ul>
+  </div>
+
+  <hr class="sep">
+
+  <h2>Edycja kampanii <code>/dashboard/campaigns/:id/edit</code></h2>
+  <ol class="steps">
+    <li><div class="step-num">1</div><div>Server Component pobiera kampanię i przekazuje ją jako prop do <strong>CampaignForm</strong></div></li>
+    <li><div class="step-num">2</div><div>Formularz prefilluje pola przez <code>defaultValue={campaign?.title}</code> itd.</div></li>
+    <li><div class="step-num">3</div><div>Server Action <code>updateCampaign(id)</code> (partial application przez <code>.bind(null, id)</code>): walidacja → <code>campaigns.update()</code> z filtrem <code>eq('brand_id', profile.id)</code></div></li>
+    <li><div class="step-num">4</div><div>Sukces: redirect na <code>/dashboard/campaigns</code></div></li>
+  </ol>
+
+  <hr class="sep">
+
+  <h2>Usuwanie kampanii</h2>
+  <ol class="steps">
+    <li><div class="step-num">1</div><div>DeleteButton renderuje <code>&lt;form&gt;</code> z ukrytym polem <code>id</code></div></li>
+    <li><div class="step-num">2</div><div>Click handler pokazuje <code>window.confirm()</code> — jeśli użytkownik anuluje, <code>e.preventDefault()</code></div></li>
+    <li><div class="step-num">3</div><div>Server Action <code>deleteCampaign</code>: weryfikacja profilu brand → <code>campaigns.delete()</code> z filtrem <code>brand_id</code></div></li>
+    <li><div class="step-num">4</div><div>Redirect na <code>/dashboard/campaigns</code></div></li>
+  </ol>
+
+  <h2>Bezpieczeństwo danych kampanii (RLS)</h2>
+  <div class="card card-red">
+    <p>Wszystkie zapytania do tabeli <code>campaigns</code> zawierają filtr <code>.eq('brand_id', user.id)</code> — użytkownik może odczytać i zmodyfikować wyłącznie <strong>swoje kampanie</strong>. RLS w Supabase stanowi drugi poziom ochrony.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ 8. GUARDY ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">8. Guardy i przekierowania</h1>
+
+  <h2>Tabela guardów</h2>
+  <table>
+    <tr><th>Miejsce</th><th>Warunek</th><th>Akcja</th></tr>
+    <tr>
+      <td><code>onboarding/page.tsx</code></td>
+      <td><code>!profile</code></td>
+      <td>redirect <code>/login</code></td>
+    </tr>
+    <tr>
+      <td><code>onboarding/page.tsx</code></td>
+      <td><code>profile.onboarding_completed</code></td>
+      <td>redirect <code>/dashboard</code></td>
+    </tr>
+    <tr>
+      <td><code>onboarding/page.tsx</code></td>
+      <td><code>account_type ≠ 'athlete' && ≠ 'brand'</code></td>
+      <td>redirect <code>/login</code></td>
+    </tr>
+    <tr>
+      <td><code>dashboard/layout.tsx</code></td>
+      <td><code>!profile</code></td>
+      <td>redirect <code>/login</code></td>
+    </tr>
+    <tr>
+      <td><code>dashboard/layout.tsx</code></td>
+      <td><code>!profile.onboarding_completed</code></td>
+      <td>redirect <code>/onboarding</code></td>
+    </tr>
+    <tr>
+      <td><code>dashboard/(brand)/layout.tsx</code></td>
+      <td><code>!profile || profile.account_type ≠ 'brand'</code></td>
+      <td>redirect <code>/dashboard</code></td>
+    </tr>
+    <tr>
+      <td><code>campaigns/[id]/page.tsx</code></td>
+      <td><code>!campaign</code> (lub nie należy do usera)</td>
+      <td><code>notFound()</code> → 404</td>
+    </tr>
+    <tr>
+      <td><code>campaigns/[id]/edit/page.tsx</code></td>
+      <td><code>!campaign</code></td>
+      <td><code>notFound()</code> → 404</td>
+    </tr>
+    <tr>
+      <td>Server Action: <code>createCampaign</code></td>
+      <td><code>!profile || account_type ≠ 'brand'</code></td>
+      <td>return <code>{ errors: { general: 'Unauthorized.' } }</code></td>
+    </tr>
+    <tr>
+      <td>Server Action: <code>updateCampaign</code></td>
+      <td><code>!profile || account_type ≠ 'brand'</code></td>
+      <td>return <code>{ errors: { general: 'Unauthorized.' } }</code></td>
+    </tr>
+    <tr>
+      <td>Server Action: <code>deleteCampaign</code></td>
+      <td><code>!profile || account_type ≠ 'brand'</code></td>
+      <td>return <code>{ error: 'Unauthorized.' }</code></td>
+    </tr>
+  </table>
+
+  <h2>Middleware Supabase</h2>
+  <div class="card card-amber">
+    <p><strong>Plik:</strong> <code>src/lib/supabase/middleware.ts</code></p>
+    <p>Wywoływany przy każdym żądaniu. Odświeża sesję Supabase (tokeny JWT w cookies) bez blokowania ruchu — guard logiki routingu znajduje się w layoutach, nie w middleware.</p>
+  </div>
+
+  <h2>DAL — Data Access Layer</h2>
+  <p><code>src/lib/dal.ts</code> jest oznaczony jako <code>server-only</code>. Eksportuje funkcje opakowane w <code>React.cache()</code> — zapytania są deduplikowane w ramach jednego renderowania:</p>
+  <table>
+    <tr><th>Funkcja</th><th>Opis</th></tr>
+    <tr><td><code>getUser()</code></td><td>Pobiera bieżącego użytkownika z Supabase Auth</td></tr>
+    <tr><td><code>getProfile()</code></td><td>Pobiera profil z tabeli <code>profiles</code></td></tr>
+    <tr><td><code>getCampaigns()</code></td><td>Lista kampanii marki (filtr: <code>brand_id = user.id</code>, sortowanie: <code>created_at DESC</code>)</td></tr>
+    <tr><td><code>getCampaign(id)</code></td><td>Pojedyncza kampania (filtr: <code>id + brand_id</code>)</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════ 9. SERVER ACTIONS ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">9. Server Actions</h1>
+
+  <h2>auth.ts — akcje autoryzacji</h2>
+  <table>
+    <tr><th>Akcja</th><th>Wejście</th><th>Sukces</th><th>Błąd</th></tr>
+    <tr>
+      <td><code>signUp</code></td>
+      <td>accountType, email, password</td>
+      <td>redirect <code>/onboarding</code></td>
+      <td>state.errors (Zod + Supabase)</td>
+    </tr>
+    <tr>
+      <td><code>signIn</code></td>
+      <td>email, password</td>
+      <td>redirect <code>/dashboard</code> lub <code>/onboarding</code></td>
+      <td>state.errors.general</td>
+    </tr>
+    <tr>
+      <td><code>signOut</code></td>
+      <td>—</td>
+      <td>redirect <code>/</code></td>
+      <td>brak (ignorowany)</td>
+    </tr>
+    <tr>
+      <td><code>completeOnboarding</code></td>
+      <td>first_name/last_name lub brand_name + disciplines</td>
+      <td>redirect <code>/dashboard</code></td>
+      <td>state.errors (Zod + Supabase)</td>
+    </tr>
+  </table>
+
+  <h2>campaigns.ts — akcje kampanii</h2>
+  <table>
+    <tr><th>Akcja</th><th>Wejście</th><th>Sukces</th><th>Błąd</th></tr>
+    <tr>
+      <td><code>createCampaign</code></td>
+      <td>title, description, disciplines[]</td>
+      <td>redirect <code>/dashboard/campaigns</code></td>
+      <td>state.errors</td>
+    </tr>
+    <tr>
+      <td><code>updateCampaign(id)</code></td>
+      <td>title, description, disciplines[]</td>
+      <td>redirect <code>/dashboard/campaigns</code></td>
+      <td>state.errors</td>
+    </tr>
+    <tr>
+      <td><code>deleteCampaign</code></td>
+      <td>id (hidden field)</td>
+      <td>redirect <code>/dashboard/campaigns</code></td>
+      <td>state.error (string)</td>
+    </tr>
+  </table>
+
+  <h2>Wzorzec useActionState</h2>
+  <p>Wszystkie formularze klienckie używają hooka <code>useActionState</code> z React 19:</p>
+  <div class="type-box" style="font-size:11px;">
+    <span class="kw">const</span> [state, action, pending] = <span class="ty">useActionState</span>(serverAction, undefined)<br><br>
+    <span class="cm">// state   → poprzedni zwrot z akcji (błędy, komunikaty)</span><br>
+    <span class="cm">// action  → handler przekazywany do form action={action}</span><br>
+    <span class="cm">// pending → boolean, true gdy akcja w toku (blokuje submit button)</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ 10. WIDOKI ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">10. Opisy widoków</h1>
+
+  <!-- Strona główna -->
+  <h2>/ — Strona główna</h2>
+  <div class="card">
+    <div style="display:flex;gap:16px;align-items:flex-start;">
+      <div style="flex:1;">
+        <p><strong>Typ:</strong> React Server Component</p>
+        <p><strong>Layout:</strong> <code>(main)/layout.tsx</code> — nagłówek publiczny</p>
+        <p><strong>Zawartość:</strong> Pusta strona — placeholder dla przyszłej landing page</p>
+        <p><strong>Nagłówek:</strong> Nawigacja „For Athletes" / „For Brands" + przyciski SIGN IN / JOIN (lub DASHBOARD gdy zalogowany)</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Login -->
+  <h2>/login — Logowanie</h2>
+  <div class="card">
+    <p><strong>Typ:</strong> Client Component (<code>'use client'</code>)</p>
+    <p><strong>Elementy:</strong></p>
+    <ul class="bullet">
+      <li>Input <code>email</code> (type=email, autocomplete)</li>
+      <li>Input <code>password</code> (type=password)</li>
+      <li>Przycisk „Sign In" (disabled podczas pending)</li>
+      <li>Link do rejestracji</li>
+      <li>Komunikaty błędów inline przy każdym polu</li>
+    </ul>
+    <p><strong>Stan:</strong> <code>useActionState(signIn)</code></p>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Rejestracja -->
+  <h2>/register — Rejestracja</h2>
+  <div class="card">
+    <p><strong>Typ:</strong> Client Component</p>
+    <p><strong>Elementy:</strong></p>
+    <ul class="bullet">
+      <li>Toggle buttons: <strong>Athlete</strong> / <strong>Brand</strong> — z wizualnym stanem active (<code>aria-pressed</code>)</li>
+      <li>Input email + password</li>
+      <li>Przycisk „Join" (disabled podczas pending)</li>
+      <li>Link do logowania</li>
+    </ul>
+    <p><strong>Stan:</strong> <code>useState(accountType)</code> + <code>useActionState(signUp)</code></p>
+    <p><strong>Ukryte pole:</strong> <code>&lt;input type="hidden" name="account-type" value={accountType} /&gt;</code></p>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Onboarding -->
+  <h2>/onboarding — Uzupełnienie profilu</h2>
+  <div class="card">
+    <p><strong>Typ:</strong> Page — RSC, Form — Client Component</p>
+    <p><strong>Elementy (Athlete):</strong> First name, Last name, DisciplinePicker</p>
+    <p><strong>Elementy (Brand):</strong> Brand name, DisciplinePicker</p>
+    <p><strong>DisciplinePicker:</strong> Toggle buttons dla Crossfit / Triathlon / Motorsports. Wybrany stan w <code>Set&lt;Discipline&gt;</code>. Emituje ukryte inputy.</p>
+    <p><strong>Stan:</strong> <code>useActionState(completeOnboarding)</code></p>
+  </div>
+</div>
+
+<div class="page page-break">
+  <h1 class="section-title" style="margin-bottom:16px;">10. Opisy widoków (cd.)</h1>
+
+  <!-- Dashboard -->
+  <h2>/dashboard — Panel główny</h2>
+  <div class="card">
+    <p><strong>Typ:</strong> RSC</p>
+    <p><strong>Guard:</strong> Wymaga profilu i ukończonego onboardingu</p>
+    <p><strong>Zawartość:</strong> Pusta strona — placeholder. Nagłówek zawiera linki: My Campaigns, My Profile (placeholder) + SIGN OUT</p>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Lista kampanii -->
+  <h2>/dashboard/campaigns — Lista kampanii</h2>
+  <div class="card">
+    <p><strong>Typ:</strong> RSC</p>
+    <p><strong>Dane:</strong> <code>getCampaigns()</code> — pobrane po stronie serwera</p>
+    <p><strong>Elementy:</strong></p>
+    <ul class="bullet">
+      <li>Przycisk „New Campaign" (prawy górny róg)</li>
+      <li>Stan pusty: komunikat + link do tworzenia</li>
+      <li>Lista kart z: tytułem, opisem (2 linie), statusem jako badge, linkiem Preview</li>
+    </ul>
+    <p><strong>Kolejność:</strong> malejąca wg <code>created_at</code></p>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Nowa kampania -->
+  <h2>/dashboard/campaigns/new — Nowa kampania</h2>
+  <div class="card">
+    <p><strong>Typ:</strong> Page — RSC, Form — Client Component</p>
+    <p><strong>Elementy formularza:</strong></p>
+    <ul class="bullet">
+      <li>Title: input text, max 200 znaków</li>
+      <li>Description: textarea 6 wierszy, max 5000 znaków</li>
+      <li>DisciplinePicker (min 1 wymagana)</li>
+      <li>Przycisk „Create Campaign" (pending: „Creating…")</li>
+    </ul>
+    <p><strong>Walidacja:</strong> Zod po stronie serwera — błędy inline przy polach</p>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Szczegóły kampanii -->
+  <h2>/dashboard/campaigns/:id — Szczegóły kampanii</h2>
+  <div class="card">
+    <p><strong>Typ:</strong> RSC</p>
+    <p><strong>Elementy:</strong></p>
+    <ul class="bullet">
+      <li>Link powrotu „← Back to Campaigns"</li>
+      <li>Tytuł + badge statusu</li>
+      <li>Opis (whitespace-pre-wrap, pełny tekst)</li>
+      <li>Dyscypliny jako pill badges z labelami</li>
+      <li>Daty Created / Last updated</li>
+      <li>Przyciski: <strong>Edit</strong> (link indigo) + <strong>Delete</strong> (czerwony, z confirm dialog)</li>
+    </ul>
+    <p><strong>404:</strong> <code>notFound()</code> gdy kampania nie istnieje lub należy do innego usera</p>
+  </div>
+
+  <hr class="sep">
+
+  <!-- Edycja kampanii -->
+  <h2>/dashboard/campaigns/:id/edit — Edycja kampanii</h2>
+  <div class="card">
+    <p><strong>Typ:</strong> Page — RSC, Form — Client Component (ten sam CampaignForm)</p>
+    <p><strong>Różnica vs /new:</strong> Pola prefillowane danymi z <code>campaign</code> prop. Akcja: <code>updateCampaign.bind(null, id)</code>. Przycisk: „Save Changes" / „Saving…"</p>
+    <p><strong>DisciplinePicker:</strong> <code>defaultValue={campaign.disciplines ?? []}</code></p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PODSUMOWANIE ═══════════════════════════ -->
+<div class="page page-break">
+  <h1 class="section-title">Podsumowanie — diagram całościowy</h1>
+
+  <div class="flow" style="align-items:center; gap:2px;">
+
+    <div class="flow-row" style="justify-content:center; gap:20px;">
+      <div class="flow-node gray" style="min-width:120px;">Nowy user<br><small>/register</small></div>
+      <div class="flow-node gray" style="min-width:120px;">Powracający<br><small>/login</small></div>
+    </div>
+
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:6px 0;">↓ ↓</div>
+
+    <div class="flow-node amber" style="min-width:320px;">/onboarding<br><small>Uzupełnienie danych + dyscypliny</small></div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:6px 0;">↓</div>
+
+    <div class="flow-node" style="min-width:320px;">/dashboard<br><small>Panel główny (pusty placeholder)</small></div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:6px 0;">↓ <small style="font-style:italic">brand only</small></div>
+
+    <div class="flow-node green" style="min-width:320px;">/dashboard/campaigns<br><small>Lista kampanii marki</small></div>
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:6px 0;">↓</div>
+
+    <div class="flow-row" style="justify-content:center; gap:16px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="flow-node" style="min-width:160px;font-size:11px;">/new<br>Nowa kampania</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="flow-node" style="min-width:160px;font-size:11px;">/:id<br>Szczegóły</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="flow-node" style="min-width:160px;font-size:11px;">/:id/edit<br>Edycja</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;color:#9ca3af;font-size:20px;padding:6px 0;">↓ <small style="font-style:italic">po akcji Create / Update / Delete</small></div>
+
+    <div class="flow-node green" style="min-width:320px;">redirect /dashboard/campaigns</div>
+
+  </div>
+
+  <hr class="sep" style="margin:40px 0;">
+
+  <div class="card card-purple" style="margin-top:24px;">
+    <h3 style="margin-top:0;">Stan implementacji (maj 2026)</h3>
+    <div class="grid2" style="margin-top:12px;">
+      <div>
+        <p><strong>Zaimplementowane:</strong></p>
+        <ul class="bullet">
+          <li>Pełna autoryzacja (rejestracja, login, logout)</li>
+          <li>Onboarding (athlete i brand)</li>
+          <li>CRUD kampanii (brand)</li>
+          <li>DisciplinePicker</li>
+          <li>Guardy i przekierowania</li>
+          <li>Walidacja Zod</li>
+        </ul>
+      </div>
+      <div>
+        <p><strong>Planowane / placeholder:</strong></p>
+        <ul class="bullet">
+          <li>Landing page (/)</li>
+          <li>Dashboard główny (treść)</li>
+          <li>My Profile (edycja profilu)</li>
+          <li>Flow dla atletów (przeglądanie kampanii)</li>
+          <li>System aplikowania atletów</li>
+          <li>Weryfikacja email Supabase</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:40px; color:#9ca3af; font-size:11px; text-align:center;">
+    MoveHard Sports &nbsp;|&nbsp; Dokumentacja wygenerowana 15 maja 2026 &nbsp;|&nbsp; Dominik Kwaczynski
+  </p>
+</div>
+
+</body>
+</html>

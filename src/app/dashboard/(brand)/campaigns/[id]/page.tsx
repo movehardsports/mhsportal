@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getCampaign } from '@/lib/dal'
 import { DeleteButton } from '../_components/delete-button'
+import { DISCIPLINES } from '@/types/discipline'
 
 export default async function CampaignPage({
   params,
@@ -40,6 +41,22 @@ export default async function CampaignPage({
             {campaign.description}
           </p>
         </div>
+
+        {campaign.disciplines && campaign.disciplines.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {campaign.disciplines.map((id) => {
+              const label = DISCIPLINES.find((d) => d.id === id)?.label ?? id
+              return (
+                <span
+                  key={id}
+                  className="rounded-full border border-indigo-500 bg-indigo-500/20 px-4 py-1.5 text-sm font-medium uppercase tracking-wide text-indigo-300"
+                >
+                  {label}
+                </span>
+              )
+            })}
+          </div>
+        )}
 
         <dl className="grid grid-cols-2 gap-4 text-sm">
           <div>

@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { z } from 'zod'
+import { DISCIPLINE_IDS } from '@/types/discipline'
 
 const SignUpSchema = z.object({
   accountType: z.enum(['athlete', 'brand'], { error: 'Select account type.' }),
@@ -15,17 +16,25 @@ const SignUpSchema = z.object({
 })
 
 const SignInSchema = z.object({
-  email: z.email({ error: 'Enter a valid email address.' }),
+  email: z.string()
+    .min(1, { error: 'Email is required.' })
+    .email({ error: 'Enter a valid email address.' }),
   password: z.string().min(1, { error: 'Password is required.' }),
 })
+
+const DisciplinesSchema = z
+  .array(z.enum(DISCIPLINE_IDS))
+  .min(1, { error: 'Select at least one discipline.' })
 
 const OnboardingAthleteSchema = z.object({
   first_name: z.string().min(1, { error: 'First name is required.' }).max(100).trim(),
   last_name: z.string().min(1, { error: 'Last name is required.' }).max(100).trim(),
+  disciplines: DisciplinesSchema,
 })
 
 const OnboardingBrandSchema = z.object({
   brand_name: z.string().min(1, { error: 'Brand name is required.' }).max(100).trim(),
+  disciplines: DisciplinesSchema,
 })
 
 type SignUpFormState = {
@@ -50,6 +59,7 @@ type OnboardingFormState = {
     first_name?: string[]
     last_name?: string[]
     brand_name?: string[]
+    disciplines?: string[]
     general?: string
   }
 } | undefined
@@ -99,7 +109,7 @@ export async function signIn(state: SignInFormState, formData: FormData): Promis
 
   if (error) {
     console.error('[signIn]', error.code, error.message)
-    return { errors: { general: 'Invalid email or password.' } }
+    return { errors: { general: 'Invalid login credentials.' } }
   }
 
   const { data: profile } = await supabase
@@ -131,10 +141,13 @@ export async function completeOnboarding(
     return { errors: { general: 'Invalid account type.' } }
   }
 
+  const disciplines = formData.getAll('disciplines').filter((v): v is string => typeof v === 'string')
+
   if (accountType === 'athlete') {
     const parsed = OnboardingAthleteSchema.safeParse({
       first_name: formData.get('first_name'),
       last_name: formData.get('last_name'),
+      disciplines,
     })
 
     if (!parsed.success) return { errors: z.flattenError(parsed.error).fieldErrors }
@@ -151,6 +164,7 @@ export async function completeOnboarding(
   } else {
     const parsed = OnboardingBrandSchema.safeParse({
       brand_name: formData.get('brand_name'),
+      disciplines,
     })
 
     if (!parsed.success) return { errors: z.flattenError(parsed.error).fieldErrors }

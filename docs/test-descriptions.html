@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opis wszystkich testów — MHS</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #1a1a2e;
+    background: #fff;
+  }
+
+  /* COVER */
+  .cover {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff;
+    page-break-after: always;
+    text-align: center;
+    padding: 60px;
+  }
+  .cover-badge {
+    background: rgba(99,102,241,0.25);
+    border: 1px solid rgba(99,102,241,0.5);
+    color: #a5b4fc;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 20px;
+    border-radius: 20px;
+    margin-bottom: 32px;
+  }
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cover-subtitle {
+    font-size: 16px;
+    color: #94a3b8;
+    margin-bottom: 48px;
+  }
+  .cover-stats {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
+  .stat-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px 32px;
+    text-align: center;
+  }
+  .stat-number {
+    font-size: 36px;
+    font-weight: 800;
+    color: #a5b4fc;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+  .cover-meta {
+    font-size: 12px;
+    color: #475569;
+  }
+
+  /* TOC */
+  .toc {
+    padding: 48px 60px;
+    page-break-after: always;
+  }
+  .toc h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .toc-subtitle {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 32px;
+  }
+  .toc-section {
+    margin-bottom: 24px;
+  }
+  .toc-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #6366f1;
+    margin-bottom: 10px;
+  }
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px dotted #e2e8f0;
+  }
+  .toc-item-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    min-width: 20px;
+  }
+  .toc-item-name {
+    font-size: 13px;
+    color: #1e293b;
+    flex: 1;
+  }
+  .toc-item-file {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+  .toc-item-count {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6366f1;
+    min-width: 24px;
+    text-align: right;
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 0 60px;
+  }
+
+  /* FILE SECTION */
+  .file-section {
+    page-break-before: always;
+    padding-top: 48px;
+    padding-bottom: 32px;
+  }
+  .file-section:first-child {
+    page-break-before: auto;
+  }
+
+  .file-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .file-number {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .file-header-text { flex: 1; }
+  .file-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+  }
+  .file-path {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #64748b;
+    background: #f8fafc;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .file-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-unit { background: #ede9fe; color: #6d28d9; }
+  .badge-e2e  { background: #dcfce7; color: #166534; }
+  .badge-count { background: #dbeafe; color: #1e40af; }
+
+  /* DESCRIBE BLOCK */
+  .describe-block {
+    margin-bottom: 20px;
+  }
+  .describe-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #7c3aed;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .describe-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #ede9fe;
+  }
+
+  /* TEST ITEM */
+  .test-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 0 10px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    background: #fafafa;
+    border: 1px solid #f1f5f9;
+    border-left: 3px solid #6366f1;
+    border-radius: 0 6px 6px 0;
+  }
+  .test-item.e2e {
+    border-left-color: #22c55e;
+    background: #f0fdf4;
+    border-color: #dcfce7;
+  }
+  .test-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: #a5b4fc;
+    padding-top: 2px;
+    text-align: right;
+  }
+  .test-item.e2e .test-num { color: #86efac; }
+  .test-body {}
+  .test-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 3px;
+    font-family: 'Courier New', monospace;
+  }
+  .test-desc {
+    font-size: 12px;
+    color: #475569;
+    line-height: 1.55;
+  }
+  .test-desc code {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    background: #f1f5f9;
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: #7c3aed;
+  }
+
+  /* SUMMARY PAGE */
+  .summary-page {
+    page-break-before: always;
+    padding: 48px 60px;
+  }
+  .summary-page h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 32px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  thead th {
+    background: #1e293b;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #374151;
+    vertical-align: middle;
+  }
+  .td-file { font-family: 'Courier New', monospace; font-size: 10px; color: #475569; }
+  .td-num { text-align: center; font-weight: 700; color: #6366f1; }
+  .td-type { text-align: center; }
+  tfoot td {
+    padding: 10px 14px;
+    font-weight: 700;
+    background: #f1f5f9;
+    border-top: 2px solid #cbd5e1;
+    color: #1e293b;
+  }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-badge">Move Hard Sports · 2026</div>
+  <h1>Opis wszystkich testów</h1>
+  <p class="cover-subtitle">Szczegółowy opis każdego testu jednostkowego i E2E w projekcie MHS</p>
+  <div class="cover-stats">
+    <div class="stat-box">
+      <span class="stat-number">124</span>
+      <span class="stat-label">Testów łącznie</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-number">81</span>
+      <span class="stat-label">Jednostkowych</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-number">43</span>
+      <span class="stat-label">E2E</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-number">12</span>
+      <span class="stat-label">Pliki testowe</span>
+    </div>
+  </div>
+  <p class="cover-meta">Vitest + Testing Library (jednostkowe) &nbsp;·&nbsp; Playwright (E2E)</p>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <h2>Spis treści</h2>
+  <p class="toc-subtitle">12 plików testowych — kliknij numer strony aby przejść do sekcji</p>
+
+  <div class="toc-section">
+    <div class="toc-section-title">Testy jednostkowe (Vitest)</div>
+    <div class="toc-item">
+      <span class="toc-item-num">1.</span>
+      <span class="toc-item-name">Header</span>
+      <span class="toc-item-file">header.test.tsx</span>
+      <span class="toc-item-count">10</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">2.</span>
+      <span class="toc-item-name">DisciplinePicker</span>
+      <span class="toc-item-file">discipline-picker.test.tsx</span>
+      <span class="toc-item-count">17</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">3.</span>
+      <span class="toc-item-name">Strona logowania</span>
+      <span class="toc-item-file">login/page.test.tsx</span>
+      <span class="toc-item-count">8</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">4.</span>
+      <span class="toc-item-name">Strona rejestracji</span>
+      <span class="toc-item-file">register/page.test.tsx</span>
+      <span class="toc-item-count">12</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">5.</span>
+      <span class="toc-item-name">Formularz onboardingu</span>
+      <span class="toc-item-file">onboarding-form.test.tsx</span>
+      <span class="toc-item-count">12</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">6.</span>
+      <span class="toc-item-name">Formularz kampanii</span>
+      <span class="toc-item-file">campaign-form.test.tsx</span>
+      <span class="toc-item-count">16</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">7.</span>
+      <span class="toc-item-name">Przycisk usuwania</span>
+      <span class="toc-item-file">delete-button.test.tsx</span>
+      <span class="toc-item-count">6</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-section-title">Testy E2E (Playwright)</div>
+    <div class="toc-item">
+      <span class="toc-item-num">8.</span>
+      <span class="toc-item-name">Rejestracja</span>
+      <span class="toc-item-file">registration.spec.ts</span>
+      <span class="toc-item-count">5</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">9.</span>
+      <span class="toc-item-name">Logowanie i wylogowanie</span>
+      <span class="toc-item-file">login.spec.ts</span>
+      <span class="toc-item-count">7</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">10.</span>
+      <span class="toc-item-name">Onboarding</span>
+      <span class="toc-item-file">onboarding.spec.ts</span>
+      <span class="toc-item-count">8</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">11.</span>
+      <span class="toc-item-name">Dashboard — kontrola dostępu</span>
+      <span class="toc-item-file">dashboard.spec.ts</span>
+      <span class="toc-item-count">4</span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-item-num">12.</span>
+      <span class="toc-item-name">Kampanie (lista, tworzenie, podgląd, edycja, usuwanie)</span>
+      <span class="toc-item-file">campaigns.spec.ts</span>
+      <span class="toc-item-count">19</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== UNIT TESTS ==================== -->
+<div class="content">
+
+<!-- 1. HEADER -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">1</div>
+    <div class="file-header-text">
+      <div class="file-title">Header</div>
+      <div class="file-path">src/components/header/header.test.tsx</div>
+      <div class="file-meta">
+        <span class="badge badge-unit">Jednostkowy</span>
+        <span class="badge badge-count">10 testów</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Gdy użytkownik NIE jest zalogowany</div>
+
+    <div class="test-item">
+      <div class="test-num">T1</div>
+      <div class="test-body">
+        <div class="test-name">renders navigation links</div>
+        <div class="test-desc">Renderuje nagłówek z nawigacją publiczną (<code>publicNav</code> zawierający "For Athletes" i "For Brands") i sprawdza, że oba linki pojawiają się w DOM. Używa <code>getAllByText()[0]</code>, bo header może renderować te elementy kilka razy (wersja desktop + mobile).</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T2</div>
+      <div class="test-body">
+        <div class="test-name">renders sign in link pointing to /login</div>
+        <div class="test-desc">Sprawdza, że istnieje link z rolą <code>link</code> i tekstem dopasowanym przez <code>/sign in/i</code> (bez rozróżnienia wielkości liter). Weryfikuje atrybut <code>href="/login"</code>. Link mockowany przez <code>next/link → &lt;a&gt;</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T3</div>
+      <div class="test-body">
+        <div class="test-name">renders join link pointing to /register</div>
+        <div class="test-desc">Analogicznie do T2 — sprawdza link "Join" wskazujący na <code>/register</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T4</div>
+      <div class="test-body">
+        <div class="test-name">renders logo image</div>
+        <div class="test-desc">Sprawdza obecność elementu <code>&lt;img&gt;</code> z <code>alt="Your Company"</code> — logo firmy w headerze.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T5</div>
+      <div class="test-body">
+        <div class="test-name">renders mobile menu button with screen reader label</div>
+        <div class="test-desc">Sprawdza obecność tekstu "Open main menu" — jest to etykieta screen readera (wizualnie ukryta przez klasę <code>sr-only</code>) wewnątrz przycisku hamburger menu mobilnego.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Gdy użytkownik JEST zalogowany</div>
+
+    <div class="test-item">
+      <div class="test-num">T6</div>
+      <div class="test-body">
+        <div class="test-name">renders dashboard link</div>
+        <div class="test-desc">Przekazuje <code>user={{ email: 'test@example.com' }}</code>. Sprawdza, że istnieje link "Dashboard" z <code>href="/dashboard"</code>. Wyszukuje przez <code>/dashboard/i</code> (bez rozróżnienia wielkości liter).</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T7</div>
+      <div class="test-body">
+        <div class="test-name">does not render sign in link</div>
+        <div class="test-desc">Sprawdza, że dla zalogowanego użytkownika link "Sign in" NIE istnieje w DOM — używa <code>queryByRole()</code> zamiast <code>getByRole()</code> i asercji <code>.not.toBeInTheDocument()</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Gdy showSignOut = true</div>
+
+    <div class="test-item">
+      <div class="test-num">T8</div>
+      <div class="test-body">
+        <div class="test-name">renders navigation links</div>
+        <div class="test-desc">Renderuje z <code>navigation={dashboardNav}</code> i <code>showSignOut</code> (bez wartości = <code>true</code>). Sprawdza, że linki "My Campaigns" i "My Profile" są widoczne w DOM.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T9</div>
+      <div class="test-body">
+        <div class="test-name">renders sign out button</div>
+        <div class="test-desc">Sprawdza, że istnieje przycisk z rolą <code>button</code> i tekstem dopasowanym przez <code>/sign out/i</code>. W kodzie tekst to "SIGN OUT" (CSS <code>uppercase</code>), ale <code>getByRole()</code> ignoruje CSS i korzysta z treści DOM — test działa poprawnie.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T10</div>
+      <div class="test-body">
+        <div class="test-name">does not render sign in link</div>
+        <div class="test-desc">Gdy <code>showSignOut=true</code>, link "Sign in" nie powinien być widoczny — test weryfikuje wzajemne wykluczanie się stanów.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. DISCIPLINE PICKER -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">2</div>
+    <div class="file-header-text">
+      <div class="file-title">DisciplinePicker</div>
+      <div class="file-path">src/components/discipline-picker/discipline-picker.test.tsx</div>
+      <div class="file-meta">
+        <span class="badge badge-unit">Jednostkowy</span>
+        <span class="badge badge-count">17 testów</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Renderowanie</div>
+
+    <div class="test-item">
+      <div class="test-num">T11</div>
+      <div class="test-body">
+        <div class="test-name">renders all three disciplines</div>
+        <div class="test-desc">Sprawdza, że w DOM są trzy checkboxy: "Crossfit", "Triathlon", "Motorsports". Wyszukiwane przez <code>role="checkbox"</code> — przyciski mają <code>role="checkbox"</code> i <code>aria-checked</code> zamiast być natywnym <code>&lt;input type="checkbox"&gt;</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T12</div>
+      <div class="test-body">
+        <div class="test-name">renders Disciplines legend</div>
+        <div class="test-desc">Sprawdza obecność tekstu "Disciplines" — nagłówek sekcji (<code>&lt;legend&gt;</code> lub <code>&lt;span&gt;</code>) informujący użytkownika, czego dotyczy ta grupa przycisków.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T13</div>
+      <div class="test-body">
+        <div class="test-name">all disciplines start unchecked</div>
+        <div class="test-desc">Renderuje bez żadnych propsów. Sprawdza, że wszystkie trzy checkboxy mają <code>aria-checked="false"</code> — domyślny stan bez wyborów.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T14</div>
+      <div class="test-body">
+        <div class="test-name">renders no hidden inputs when nothing is selected</div>
+        <div class="test-desc">Używa <code>container.querySelectorAll('input[type="hidden"]')</code> i sprawdza, że wynik ma długość 0. Ukryte inputy istnieją tylko dla zaznaczonych dyscyplin — formularz musi wiedzieć co wysłać do serwera.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Wartości domyślne (prop defaultValue)</div>
+
+    <div class="test-item">
+      <div class="test-num">T15</div>
+      <div class="test-body">
+        <div class="test-name">pre-selects disciplines from defaultValue</div>
+        <div class="test-desc">Przekazuje <code>defaultValue={['crossfit', 'triathlon']}</code>. Sprawdza, że Crossfit i Triathlon mają <code>aria-checked="true"</code>, a Motorsports <code>"false"</code>. Używane przy edycji istniejącej kampanii.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T16</div>
+      <div class="test-body">
+        <div class="test-name">renders hidden inputs for pre-selected disciplines</div>
+        <div class="test-desc">Przy dwóch prewybranych dyscyplinach są dokładnie 2 ukryte inputy w DOM od razu po renderowaniu (bez żadnej interakcji).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Zachowanie toggle (klikanie)</div>
+
+    <div class="test-item">
+      <div class="test-num">T17</div>
+      <div class="test-body">
+        <div class="test-name">clicking a discipline selects it</div>
+        <div class="test-desc">Kliknięcie Crossfit przez <code>userEvent.click()</code> zmienia jego <code>aria-checked</code> na <code>"true"</code>. Weryfikuje podstawowe działanie toggle.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T18</div>
+      <div class="test-body">
+        <div class="test-name">clicking a selected discipline deselects it</div>
+        <div class="test-desc">Startuje z <code>defaultValue={['crossfit']}</code> (Crossfit zaznaczony). Kliknięcie Crossfit zmienia <code>aria-checked</code> z powrotem na <code>"false"</code> — toggle działa w obie strony.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T19</div>
+      <div class="test-body">
+        <div class="test-name">selecting one discipline does not affect others</div>
+        <div class="test-desc">Po kliknięciu Crossfit sprawdza, że Triathlon i Motorsports nadal mają <code>aria-checked="false"</code>. Dyscypliny są niezależne — nie ma logiki radio-button.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T20</div>
+      <div class="test-body">
+        <div class="test-name">multiple disciplines can be selected simultaneously</div>
+        <div class="test-desc">Klika Crossfit i Motorsports (pomijając Triathlon). Sprawdza: Crossfit=<code>true</code>, Triathlon=<code>false</code>, Motorsports=<code>true</code>. Potwierdza, że można zaznaczyć kilka naraz — wielokrotny wybór.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Ukryte inputy (integracja z formularzem)</div>
+
+    <div class="test-item">
+      <div class="test-num">T21</div>
+      <div class="test-body">
+        <div class="test-name">adds a hidden input when a discipline is selected</div>
+        <div class="test-desc">Po kliknięciu Crossfit pojawia się w DOM element <code>&lt;input name="disciplines" value="crossfit" type="hidden"&gt;</code>. Ten input jest niezbędny, żeby wartość trafiła do <code>FormData</code> przy submit.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T22</div>
+      <div class="test-body">
+        <div class="test-name">renders one hidden input per selected discipline</div>
+        <div class="test-desc">Klika Crossfit i Triathlon. Sprawdza, że są dokładnie 2 ukryte inputy. Każda dyscyplina ma swój własny input — serwer odczytuje je jako tablicę wartości pod tym samym kluczem.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T23</div>
+      <div class="test-body">
+        <div class="test-name">removes hidden input when discipline is deselected</div>
+        <div class="test-desc">Startuje z <code>defaultValue={['crossfit']}</code>. Po kliknięciu Crossfit (odznaczenie) sprawdza, że input <code>name="disciplines" value="crossfit"</code> NIE istnieje w DOM.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T24</div>
+      <div class="test-body">
+        <div class="test-name">uses the name prop for hidden inputs</div>
+        <div class="test-desc">Renderuje z <code>name="sports"</code>. Po kliknięciu Crossfit sprawdza, że input ma <code>name="sports"</code> zamiast domyślnego <code>"disciplines"</code>. Umożliwia reużycie komponentu z innym kluczem formularza.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stan błędu</div>
+
+    <div class="test-item">
+      <div class="test-num">T25</div>
+      <div class="test-body">
+        <div class="test-name">displays error message when provided</div>
+        <div class="test-desc">Przekazanie <code>error="Select at least one discipline."</code> renderuje ten tekst w DOM. Błąd pochodzi z serwera (Zod) i jest przekazywany przez formularz nadrzędny.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T26</div>
+      <div class="test-body">
+        <div class="test-name">error message has aria-live="polite"</div>
+        <div class="test-desc">Element z tekstem błędu ma atrybut <code>aria-live="polite"</code>. Powoduje to, że screen readery ogłoszą pojawienie się błędu gdy skończy się aktualna czytana treść — bez przerywania użytkownikowi.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T27</div>
+      <div class="test-body">
+        <div class="test-name">does not display error element when no error is provided</div>
+        <div class="test-desc">Renderuje bez prop <code>error</code>. Używa <code>queryByText(/select at least/i)</code> i sprawdza <code>.not.toBeInTheDocument()</code> — brak błędu nie powinien zostawiać pustego kontenera w DOM.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. LOGIN PAGE -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">3</div>
+    <div class="file-header-text">
+      <div class="file-title">Strona logowania</div>
+      <div class="file-path">src/app/(main)/(customer)/login/page.test.tsx</div>
+      <div class="file-meta">
+        <span class="badge badge-unit">Jednostkowy</span>
+        <span class="badge badge-count">8 testów</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:#64748b;margin-bottom:16px;padding:8px 12px;background:#f8fafc;border-radius:6px;border-left:3px solid #94a3b8;">
+    <strong>Setup:</strong> <code>useActionState</code> jest mockowany przez <code>vi.mock('react', ...)</code>. Domyślnie zwraca <code>[undefined, vi.fn(), false]</code> — brak stanu, no-op action, nie w toku.
+  </p>
+
+  <div class="describe-block">
+    <div class="describe-title">Renderowanie</div>
+
+    <div class="test-item">
+      <div class="test-num">T28</div>
+      <div class="test-body">
+        <div class="test-name">renders the page heading</div>
+        <div class="test-desc">Sprawdza, że element z rolą <code>heading</code> i tekstem "Sign in to your account" jest w DOM — weryfikuje tytuł strony logowania.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T29</div>
+      <div class="test-body">
+        <div class="test-name">renders email and password fields</div>
+        <div class="test-desc">Sprawdza obecność inputów przez <code>getByLabelText('Email address')</code> i <code>getByLabelText('Password')</code> — weryfikuje powiązanie <code>&lt;label&gt;</code> z <code>&lt;input&gt;</code> przez <code>htmlFor/id</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T30</div>
+      <div class="test-body">
+        <div class="test-name">renders the Sign In button</div>
+        <div class="test-desc">Sprawdza przycisk "Sign In" przez <code>getByRole('button', { name: 'Sign In' })</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T31</div>
+      <div class="test-body">
+        <div class="test-name">renders sign up link pointing to /register</div>
+        <div class="test-desc">Sprawdza link "Sign up" z <code>href="/register"</code> — link do strony rejestracji dla nowych użytkowników.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stany błędów (dane z serwera)</div>
+
+    <div class="test-item">
+      <div class="test-num">T32</div>
+      <div class="test-body">
+        <div class="test-name">displays email error from server</div>
+        <div class="test-desc">Mockuje <code>useActionState</code> z <code>{ errors: { email: ['Email is required.'] } }</code>. Sprawdza, że tekst "Email is required." jest widoczny. <code>email</code> to tablica — komponent renderuje <code>state.errors.email[0]</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T33</div>
+      <div class="test-body">
+        <div class="test-name">displays password error from server</div>
+        <div class="test-desc">Analogicznie do T32 — mockuje <code>errors.password: ['Password is required.']</code> i sprawdza tekst błędu.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T34</div>
+      <div class="test-body">
+        <div class="test-name">displays general error from server</div>
+        <div class="test-desc">Mockuje <code>errors.general: 'Invalid login credentials.'</code> (string, nie tablica). Renderowane bezpośrednio: <code>{state.errors.general}</code>. Pojawia się gdy dane logowania są nieprawidłowe.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stan oczekiwania (pending)</div>
+
+    <div class="test-item">
+      <div class="test-num">T35</div>
+      <div class="test-body">
+        <div class="test-name">shows Signing in... and disables button while submitting</div>
+        <div class="test-desc">Mockuje <code>useActionState</code> z <code>pending=true</code>. Sprawdza, że przycisk ma tekst "Signing in..." (zamiast "Sign In") i jest wyłączony (<code>disabled</code>). Zapobiega podwójnemu submittowi.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. REGISTER PAGE -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">4</div>
+    <div class="file-header-text">
+      <div class="file-title">Strona rejestracji</div>
+      <div class="file-path">src/app/(main)/(customer)/register/page.test.tsx</div>
+      <div class="file-meta">
+        <span class="badge badge-unit">Jednostkowy</span>
+        <span class="badge badge-count">12 testów</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Renderowanie</div>
+
+    <div class="test-item">
+      <div class="test-num">T36</div>
+      <div class="test-body">
+        <div class="test-name">renders account type selection buttons</div>
+        <div class="test-desc">Sprawdza obecność przycisków "Athlete" i "Brand" przez <code>getByRole('button', { name: ... })</code>. Są to przyciski toggle do wyboru typu konta.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T37</div>
+      <div class="test-body">
+        <div class="test-name">renders email and password fields</div>
+        <div class="test-desc">Sprawdza pola email i hasła przez <code>getByLabelText()</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T38</div>
+      <div class="test-body">
+        <div class="test-name">renders the Join button</div>
+        <div class="test-desc">Sprawdza przycisk "Join" — główny przycisk submit formularza rejestracji.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T39</div>
+      <div class="test-body">
+        <div class="test-name">renders sign in link pointing to /login</div>
+        <div class="test-desc">Sprawdza link "Sign in" z <code>href="/login"</code> dla użytkowników, którzy już mają konto.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Wybór typu konta</div>
+
+    <div class="test-item">
+      <div class="test-num">T40</div>
+      <div class="test-body">
+        <div class="test-name">Athlete button is not pressed by default</div>
+        <div class="test-desc">Sprawdza, że przycisk "Athlete" ma <code>aria-pressed="false"</code> bez żadnej interakcji — domyślnie żaden typ nie jest wybrany.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T41</div>
+      <div class="test-body">
+        <div class="test-name">clicking Athlete marks it as pressed</div>
+        <div class="test-desc">Po kliknięciu "Athlete": <code>aria-pressed="true"</code>. "Brand" nadal <code>"false"</code>. Ukryty input <code>name="account-type"</code> przechowuje wybraną wartość do przesłania formularzem.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T42</div>
+      <div class="test-body">
+        <div class="test-name">clicking Brand marks it as pressed and deselects Athlete</div>
+        <div class="test-desc">Klika "Athlete", potem "Brand". Weryfikuje, że "Brand" ma <code>aria-pressed="true"</code> a "Athlete" wraca do <code>"false"</code>. Zachowanie jak radio-button — tylko jeden może być aktywny.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stany błędów</div>
+
+    <div class="test-item">
+      <div class="test-num">T43</div>
+      <div class="test-body">
+        <div class="test-name">displays account type error from server</div>
+        <div class="test-desc">Mockuje <code>errors.accountType: ['Select account type.']</code>. Pojawia się gdy użytkownik nie wybrał "Athlete" ani "Brand" przed wysłaniem formularza.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T44</div>
+      <div class="test-body">
+        <div class="test-name">displays email error from server</div>
+        <div class="test-desc">Mockuje <code>errors.email: ['Email is required.']</code> — renderowane przez <code>state.errors.email[0]</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T45</div>
+      <div class="test-body">
+        <div class="test-name">displays password error from server</div>
+        <div class="test-desc">Mockuje <code>errors.password: ['Password must be at least 8 characters.']</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T46</div>
+      <div class="test-body">
+        <div class="test-name">displays general error from server</div>
+        <div class="test-desc">Mockuje <code>errors.general: 'User already registered.'</code> (string). Pojawia się gdy email jest już zajęty w Supabase.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stan oczekiwania</div>
+
+    <div class="test-item">
+      <div class="test-num">T47</div>
+      <div class="test-body">
+        <div class="test-name">shows Joining... and disables button while submitting</div>
+        <div class="test-desc">Gdy <code>pending=true</code>, przycisk "Join" zmienia tekst na "Joining..." i jest wyłączony — zapobiega wielokrotnej rejestracji podczas oczekiwania na odpowiedź.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. ONBOARDING FORM -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">5</div>
+    <div class="file-header-text">
+      <div class="file-title">Formularz onboardingu</div>
+      <div class="file-path">src/app/(main)/(customer)/onboarding/onboarding-form.test.tsx</div>
+      <div class="file-meta">
+        <span class="badge badge-unit">Jednostkowy</span>
+        <span class="badge badge-count">12 testów</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:#64748b;margin-bottom:16px;padding:8px 12px;background:#f8fafc;border-radius:6px;border-left:3px solid #94a3b8;">
+    Komponent <code>OnboardingForm</code> przyjmuje prop <code>accountType: 'athlete' | 'brand'</code> i renderuje różne pola w zależności od typu konta.
+  </p>
+
+  <div class="describe-block">
+    <div class="describe-title">Typ konta: atleta</div>
+
+    <div class="test-item">
+      <div class="test-num">T48</div>
+      <div class="test-body">
+        <div class="test-name">renders first name and last name fields</div>
+        <div class="test-desc">Dla <code>accountType="athlete"</code> są pola "First name" i "Last name" — dane osobowe atlety.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T49</div>
+      <div class="test-body">
+        <div class="test-name">does not render brand name field</div>
+        <div class="test-desc">Atleta NIE ma pola "Brand name" — <code>queryByLabelText('Brand name')</code> zwraca <code>null</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Typ konta: brand</div>
+
+    <div class="test-item">
+      <div class="test-num">T50</div>
+      <div class="test-body">
+        <div class="test-name">renders brand name field</div>
+        <div class="test-desc">Dla <code>accountType="brand"</code> jest pole "Brand name" — nazwa firmy/marki.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T51</div>
+      <div class="test-body">
+        <div class="test-name">does not render first name and last name fields</div>
+        <div class="test-desc">Brand NIE ma pól imienia i nazwiska — sprawdza, że oba są nieobecne w DOM.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">DisciplinePicker (wspólny dla obu typów)</div>
+
+    <div class="test-item">
+      <div class="test-num">T52</div>
+      <div class="test-body">
+        <div class="test-name">renders discipline picker for athlete</div>
+        <div class="test-desc">Formularz atlety zawiera checkboxy Crossfit, Triathlon i Motorsports — atleta określa swoje dyscypliny podczas onboardingu.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T53</div>
+      <div class="test-body">
+        <div class="test-name">renders discipline picker for brand</div>
+        <div class="test-desc">Formularz brandu również zawiera DisciplinePicker — brand określa, jakie dyscypliny sportu obsługuje (do dopasowywania z atletami).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stany błędów</div>
+
+    <div class="test-item">
+      <div class="test-num">T54</div>
+      <div class="test-body">
+        <div class="test-name">displays first name error from server</div>
+        <div class="test-desc">Mockuje <code>errors.first_name: ['First name is required.']</code>. Pojawia się gdy atleta nie wpisał imienia.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T55</div>
+      <div class="test-body">
+        <div class="test-name">displays last name error from server</div>
+        <div class="test-desc">Mockuje <code>errors.last_name: ['Last name is required.']</code>. Analogicznie do T54.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T56</div>
+      <div class="test-body">
+        <div class="test-name">displays brand name error from server</div>
+        <div class="test-desc">Mockuje <code>errors.brand_name: ['Brand name is required.']</code>. Dla formularza brandu.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T57</div>
+      <div class="test-body">
+        <div class="test-name">displays disciplines error from server</div>
+        <div class="test-desc">Mockuje <code>errors.disciplines: ['Select at least one discipline.']</code>. Błąd przekazywany do <code>DisciplinePicker</code> jako prop <code>error</code> — renderowany przez jego własny mechanizm błędów (z <code>aria-live</code>).</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T58</div>
+      <div class="test-body">
+        <div class="test-name">displays general error from server</div>
+        <div class="test-desc">Mockuje <code>errors.general: 'Not authenticated.'</code> — błąd gdy sesja wygasła lub coś poszło nie tak po stronie serwera.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stan oczekiwania</div>
+
+    <div class="test-item">
+      <div class="test-num">T59</div>
+      <div class="test-body">
+        <div class="test-name">shows Saving... and disables button while submitting</div>
+        <div class="test-desc">Gdy <code>pending=true</code>, przycisk "Continue" zmienia tekst na "Saving..." i jest wyłączony.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. CAMPAIGN FORM -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">6</div>
+    <div class="file-header-text">
+      <div class="file-title">Formularz kampanii</div>
+      <div class="file-path">src/app/dashboard/(brand)/campaigns/_components/campaign-form.test.tsx</div>
+      <div class="file-meta">
+        <span class="badge badge-unit">Jednostkowy</span>
+        <span class="badge badge-count">16 testów</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:#64748b;margin-bottom:16px;padding:8px 12px;background:#f8fafc;border-radius:6px;border-left:3px solid #94a3b8;">
+    <code>CampaignForm</code> działa w dwóch trybach: <strong>tworzenia</strong> (brak prop <code>campaign</code>) i <strong>edycji</strong> (z prop <code>campaign</code>). Mockuje zarówno <code>createCampaign</code> jak i <code>updateCampaign</code>.
+  </p>
+
+  <div class="describe-block">
+    <div class="describe-title">Tryb tworzenia (brak prop campaign)</div>
+
+    <div class="test-item">
+      <div class="test-num">T60</div>
+      <div class="test-body">
+        <div class="test-name">renders title and description fields</div>
+        <div class="test-desc">Pola "Title" i "Description" są w DOM — wyszukiwane przez <code>getByLabelText()</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T61</div>
+      <div class="test-body">
+        <div class="test-name">renders discipline picker with all options</div>
+        <div class="test-desc">Formularz zawiera DisciplinePicker z checkboxami Crossfit, Triathlon i Motorsports.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T62</div>
+      <div class="test-body">
+        <div class="test-name">renders Create Campaign button</div>
+        <div class="test-desc">Przycisk submit ma tekst "Create Campaign" — sygnalizuje tryb tworzenia nowej kampanii.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T63</div>
+      <div class="test-body">
+        <div class="test-name">title and description inputs start empty</div>
+        <div class="test-desc">Oba pola mają pustą wartość (<code>toHaveValue('')</code>) — nowa kampania startuje z czystym formularzem.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T64</div>
+      <div class="test-body">
+        <div class="test-name">all disciplines start unchecked</div>
+        <div class="test-desc">Wszystkie trzy checkboxy mają <code>aria-checked="false"</code> — brak prewybranych dyscyplin dla nowej kampanii.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Tryb edycji (z prop campaign)</div>
+
+    <div class="test-item">
+      <div class="test-num">T65</div>
+      <div class="test-body">
+        <div class="test-name">pre-fills title and description from campaign</div>
+        <div class="test-desc">Przekazuje <code>mockCampaign</code> z tytułem "Summer Sprint" i opisem "A campaign for summer athletes.". Sprawdza, że oba pola mają te wartości przez <code>toHaveValue()</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T66</div>
+      <div class="test-body">
+        <div class="test-name">pre-selects disciplines from campaign</div>
+        <div class="test-desc"><code>mockCampaign.disciplines = ['crossfit', 'triathlon']</code>. Crossfit i Triathlon mają <code>aria-checked="true"</code>, Motorsports <code>"false"</code> — formularz odzwierciedla istniejący stan kampanii.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T67</div>
+      <div class="test-body">
+        <div class="test-name">renders Save Changes button</div>
+        <div class="test-desc">W trybie edycji przycisk submit ma tekst "Save Changes" zamiast "Create Campaign" — jasny sygnał dla użytkownika, że modyfikuje istniejącą kampanię.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T68</div>
+      <div class="test-body">
+        <div class="test-name">handles campaign with null disciplines</div>
+        <div class="test-desc">Przekazuje <code>{ ...mockCampaign, disciplines: null }</code>. Sprawdza, że wszystkie checkboxy mają <code>aria-checked="false"</code> — bezpieczna obsługa kampanii bez przypisanych dyscyplin (edge case z bazy danych).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stany błędów</div>
+
+    <div class="test-item">
+      <div class="test-num">T69</div>
+      <div class="test-body">
+        <div class="test-name">displays title error</div>
+        <div class="test-desc">Mockuje <code>errors.title: ['Title must be at least 3 characters.']</code> i sprawdza tekst błędu pod polem tytułu.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T70</div>
+      <div class="test-body">
+        <div class="test-name">title input has aria-invalid when there is an error</div>
+        <div class="test-desc">Gdy jest błąd tytułu, input ma <code>aria-invalid="true"</code> — informuje technologie asystujące, że pole zawiera błędną wartość. Ważne dla dostępności.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T71</div>
+      <div class="test-body">
+        <div class="test-name">displays description error</div>
+        <div class="test-desc">Mockuje <code>errors.description: ['Description must be at least 10 characters.']</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T72</div>
+      <div class="test-body">
+        <div class="test-name">displays disciplines error via DisciplinePicker</div>
+        <div class="test-desc">Mockuje <code>errors.disciplines: ['Select at least one discipline.']</code>. Błąd przekazywany do <code>DisciplinePicker</code> — sprawdza, że integracja między formularzem a pickerem działa poprawnie.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T73</div>
+      <div class="test-body">
+        <div class="test-name">displays general error</div>
+        <div class="test-desc">Mockuje <code>errors.general: 'Unauthorized.'</code> — błąd gdy sesja użytkownika wygasła podczas edycji.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stan oczekiwania</div>
+
+    <div class="test-item">
+      <div class="test-num">T74</div>
+      <div class="test-body">
+        <div class="test-name">shows Creating... and disables button in create mode</div>
+        <div class="test-desc">W trybie tworzenia gdy <code>pending=true</code>: przycisk zmienia tekst na "Creating..." i jest wyłączony.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T75</div>
+      <div class="test-body">
+        <div class="test-name">shows Saving... and disables button in edit mode</div>
+        <div class="test-desc">W trybie edycji gdy <code>pending=true</code>: przycisk zmienia tekst na "Saving..." i jest wyłączony.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. DELETE BUTTON -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">7</div>
+    <div class="file-header-text">
+      <div class="file-title">Przycisk usuwania kampanii</div>
+      <div class="file-path">src/app/dashboard/(brand)/campaigns/_components/delete-button.test.tsx</div>
+      <div class="file-meta">
+        <span class="badge badge-unit">Jednostkowy</span>
+        <span class="badge badge-count">6 testów</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Renderowanie</div>
+
+    <div class="test-item">
+      <div class="test-num">T76</div>
+      <div class="test-body">
+        <div class="test-name">renders Delete button</div>
+        <div class="test-desc">Sprawdza, że przycisk z tekstem "Delete" jest w DOM. Komponent <code>DeleteButton</code> przyjmuje <code>id</code> kampanii jako prop.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T77</div>
+      <div class="test-body">
+        <div class="test-name">renders hidden input with the campaign id</div>
+        <div class="test-desc">Sprawdza przez <code>container.querySelector('input[name="id"]')</code>, że ukryty input ma <code>value="abc-123"</code> — ID kampanii przesyłane do server action przy usuwaniu.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T78</div>
+      <div class="test-body">
+        <div class="test-name">button is enabled by default</div>
+        <div class="test-desc">Sprawdza, że przycisk NIE jest wyłączony w stanie domyślnym — użytkownik może kliknąć Delete.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stan oczekiwania</div>
+
+    <div class="test-item">
+      <div class="test-num">T79</div>
+      <div class="test-body">
+        <div class="test-name">shows Deleting... while pending</div>
+        <div class="test-desc">Gdy <code>pending=true</code>, przycisk zmienia tekst na "Deleting..." — wizualny feedback podczas usuwania.</div>
+      </div>
+    </div>
+
+    <div class="test-item">
+      <div class="test-num">T80</div>
+      <div class="test-body">
+        <div class="test-name">disables button while pending</div>
+        <div class="test-desc">Podczas usuwania przycisk jest wyłączony — zapobiega wielokrotnemu kliknięciu Delete na tę samą kampanię.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Stan błędu</div>
+
+    <div class="test-item">
+      <div class="test-num">T81</div>
+      <div class="test-body">
+        <div class="test-name">displays error message when deletion fails</div>
+        <div class="test-desc">Mockuje <code>{ error: 'Could not delete campaign. Please try again.' }</code>. Sprawdza, że tekst błędu jest widoczny — informuje użytkownika gdy usunięcie się nie powiodło (np. błąd bazy danych).</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== E2E TESTS ==================== -->
+
+<!-- 8. REGISTRATION E2E -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">8</div>
+    <div class="file-header-text">
+      <div class="file-title">Rejestracja</div>
+      <div class="file-path">tests/e2e/registration.spec.ts</div>
+      <div class="file-meta">
+        <span class="badge badge-e2e">E2E</span>
+        <span class="badge badge-count">5 testów</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:#64748b;margin-bottom:16px;padding:8px 12px;background:#f0fdf4;border-radius:6px;border-left:3px solid #22c55e;">
+    Każdy test zaczyna od przejścia na <code>/register</code> przez <code>test.beforeEach</code>. Testy E2E uderzają w prawdziwy serwer i bazę Supabase.
+  </p>
+
+  <div class="test-item e2e">
+    <div class="test-num">E1</div>
+    <div class="test-body">
+      <div class="test-name">displays the registration form</div>
+      <div class="test-desc">Sprawdza widoczność nagłówka "Create your account", przycisków "Athlete" i "Brand" (wybór typu konta), pól email i hasła.</div>
+    </div>
+  </div>
+
+  <div class="test-item e2e">
+    <div class="test-num">E2</div>
+    <div class="test-body">
+      <div class="test-name">shows error when account type is not selected</div>
+      <div class="test-desc">Wypełnia email i hasło, ale <strong>nie klika</strong> "Athlete" ani "Brand". Po kliknięciu "Join" serwer zwraca błąd "Select account type." — ukryty input <code>account-type</code> jest pusty, Zod go odrzuca.</div>
+    </div>
+  </div>
+
+  <div class="test-item e2e">
+    <div class="test-num">E3</div>
+    <div class="test-body">
+      <div class="test-name">shows error when password is too short</div>
+      <div class="test-desc">Wybiera typ "Athlete", wpisuje hasło "123" (3 znaki). Po wysłaniu serwer zwraca "Password must be at least 8 characters." — Zod waliduje minimalną długość hasła.</div>
+    </div>
+  </div>
+
+  <div class="test-item e2e">
+    <div class="test-num">E4</div>
+    <div class="test-body">
+      <div class="test-name">successful registration as athlete redirects to onboarding</div>
+      <div class="test-desc">Wybiera "Athlete", wpisuje unikalny email (timestamp) i hasło "password123", klika "Join". Sprawdza redirect na <code>/onboarding</code> z nagłówkiem "Complete your profile" i polami "First name", "Last name".</div>
+    </div>
+  </div>
+
+  <div class="test-item e2e">
+    <div class="test-num">E5</div>
+    <div class="test-body">
+      <div class="test-name">successful registration as brand redirects to onboarding with brand name field</div>
+      <div class="test-desc">Analogicznie do E4, ale typ "Brand". Po redirectie na <code>/onboarding</code> widoczne jest pole "Brand name" zamiast imienia i nazwiska.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 9. LOGIN E2E -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">9</div>
+    <div class="file-header-text">
+      <div class="file-title">Logowanie i wylogowanie</div>
+      <div class="file-path">tests/e2e/login.spec.ts</div>
+      <div class="file-meta">
+        <span class="badge badge-e2e">E2E</span>
+        <span class="badge badge-count">7 testów</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:#64748b;margin-bottom:16px;padding:8px 12px;background:#f0fdf4;border-radius:6px;border-left:3px solid #22c55e;">
+    Helperzy: <code>registerUser()</code> rejestruje nowego użytkownika i czeka na <code>/onboarding</code>. <code>completeOnboarding()</code> wypełnia onboarding atlety. <code>signOutUser()</code> przechodzi na <code>/dashboard</code> i klika Sign out.
+  </p>
+
+  <div class="describe-block">
+    <div class="describe-title">Logowanie (każdy test zaczyna od page.goto('/login'))</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E6</div>
+      <div class="test-body">
+        <div class="test-name">displays the login form</div>
+        <div class="test-desc">Sprawdza widoczność nagłówka "Sign in to your account", pól email i hasła, przycisku "Sign In" oraz linku "Sign up".</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E7</div>
+      <div class="test-body">
+        <div class="test-name">shows validation errors when fields are empty</div>
+        <div class="test-desc">Usuwa atrybut <code>required</code> ze wszystkich pól przez <code>page.evaluate()</code> (żeby przeglądarka nie blokowała submitu). Klika "Sign In" z pustymi polami. Serwer zwraca "Email is required." i "Password is required."</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E8</div>
+      <div class="test-body">
+        <div class="test-name">shows error for invalid credentials</div>
+        <div class="test-desc">Wpisuje nieistniejący email i złe hasło. Supabase zwraca błąd, server action mapuje go na "Invalid login credentials." — sprawdzane przez regex <code>/invalid login credentials/i</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E9</div>
+      <div class="test-body">
+        <div class="test-name">successful login redirects to /onboarding when onboarding not completed</div>
+        <div class="test-desc">Rejestruje nowego użytkownika (który ląduje na <code>/onboarding</code>), wylogowuje go przez <code>signOutUser()</code> (wchodzi na <code>/dashboard</code>, klika Sign out), loguje ponownie. Sprawdza URL <code>/onboarding</code> — DAL wykrywa brak ukończonego onboardingu.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E10</div>
+      <div class="test-body">
+        <div class="test-name">successful login redirects to /dashboard when onboarding is completed</div>
+        <div class="test-desc">Rejestruje, kończy onboarding (John Doe + Crossfit), wylogowuje, loguje ponownie. Sprawdza URL <code>/dashboard</code> — profil w Supabase jest ukończony, DAL przekierowuje na dashboard.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Wylogowanie</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E11</div>
+      <div class="test-body">
+        <div class="test-name">dashboard header shows sign out button when logged in</div>
+        <div class="test-desc">Rejestruje użytkownika, wchodzi na <code>/dashboard</code>. Sprawdza widoczność przycisku "Sign out" w headerze — weryfikuje, że zalogowany użytkownik ma możliwość wylogowania.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E12</div>
+      <div class="test-body">
+        <div class="test-name">sign out redirects to homepage</div>
+        <div class="test-desc">Rejestruje użytkownika, klika Sign out przez <code>signOutUser()</code>. Sprawdza URL <code>/</code> — po wylogowaniu użytkownik wraca na stronę główną.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10. ONBOARDING E2E -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">10</div>
+    <div class="file-header-text">
+      <div class="file-title">Onboarding</div>
+      <div class="file-path">tests/e2e/onboarding.spec.ts</div>
+      <div class="file-meta">
+        <span class="badge badge-e2e">E2E</span>
+        <span class="badge badge-count">8 testów</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Onboarding — atleta (beforeEach: rejestracja jako Athlete)</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E13</div>
+      <div class="test-body">
+        <div class="test-name">displays form with first name and last name fields</div>
+        <div class="test-desc">Sprawdza widoczność nagłówka "Complete your profile" i pól "First name", "Last name" dla atlety.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E14</div>
+      <div class="test-body">
+        <div class="test-name">shows server validation errors when fields are empty</div>
+        <div class="test-desc">Usuwa <code>required</code> ze wszystkich pól, klika "Continue". Serwer waliduje przez Zod i zwraca trzy błędy jednocześnie: "First name is required.", "Last name is required.", "Select at least one discipline."</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E15</div>
+      <div class="test-body">
+        <div class="test-name">redirects to home on successful submission</div>
+        <div class="test-desc">Wypełnia "John", "Doe", zaznacza Crossfit, klika "Continue". Supabase aktualizuje profil. Server action przekierowuje na <code>/dashboard</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Onboarding — już ukończony</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E16</div>
+      <div class="test-body">
+        <div class="test-name">redirects to home if onboarding already done</div>
+        <div class="test-desc">Rejestruje i kończy onboarding. Następnie próbuje wejść ponownie na <code>/onboarding</code> przez <code>page.goto()</code>. DAL wykrywa ukończony onboarding i przekierowuje na <code>/dashboard</code> — ochrona przed ponownym wypełnianiem formularza.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Onboarding — brand (beforeEach: rejestracja jako Brand)</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E17</div>
+      <div class="test-body">
+        <div class="test-name">displays form with brand name field</div>
+        <div class="test-desc">Sprawdza widoczność pola "Brand name" dla brandu — serwer renderuje inny formularz w zależności od typu konta przechowywanego w profilu Supabase.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E18</div>
+      <div class="test-body">
+        <div class="test-name">shows server validation error when field is empty</div>
+        <div class="test-desc">Usuwa <code>required</code>, klika "Continue". Serwer zwraca "Brand name is required." i "Select at least one discipline."</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E19</div>
+      <div class="test-body">
+        <div class="test-name">redirects to home on successful submission</div>
+        <div class="test-desc">Wypełnia "Nike", zaznacza Crossfit, klika "Continue". Redirect na <code>/dashboard</code>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 11. DASHBOARD E2E -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">11</div>
+    <div class="file-header-text">
+      <div class="file-title">Dashboard — kontrola dostępu</div>
+      <div class="file-path">tests/e2e/dashboard.spec.ts</div>
+      <div class="file-meta">
+        <span class="badge badge-e2e">E2E</span>
+        <span class="badge badge-count">4 testy</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Kontrola dostępu do dashboardu</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E20</div>
+      <div class="test-body">
+        <div class="test-name">unauthenticated user is redirected to /login</div>
+        <div class="test-desc">Wchodzi na <code>/dashboard</code> bez logowania. Middleware/DAL wykrywa brak sesji i przekierowuje na <code>/login</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E21</div>
+      <div class="test-body">
+        <div class="test-name">authenticated user without completed onboarding is redirected to /onboarding</div>
+        <div class="test-desc">Rejestruje użytkownika (który ląduje na <code>/onboarding</code>), następnie przez <code>page.goto('/dashboard')</code> próbuje wejść na dashboard. DAL sprawdza profil — brak <code>first_name</code> (lub <code>brand_name</code>), redirect na <code>/onboarding</code>.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E22</div>
+      <div class="test-body">
+        <div class="test-name">authenticated user with completed onboarding can access dashboard</div>
+        <div class="test-desc">Rejestruje atletę, kończy onboarding (John Doe + Crossfit). Sprawdza URL <code>/dashboard</code> — ukończony profil pozwala na dostęp.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Trasy tylko dla brandów</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E23</div>
+      <div class="test-body">
+        <div class="test-name">athlete account is redirected from /dashboard/campaigns to /dashboard</div>
+        <div class="test-desc">Rejestruje atletę, kończy onboarding. Próbuje wejść na <code>/dashboard/campaigns</code> przez <code>page.goto()</code>. Layout brandu (<code>(brand)</code>) sprawdza typ konta i przekierowuje atletę na <code>/dashboard</code> — trasy kampanii są tylko dla brandów.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 12. CAMPAIGNS E2E -->
+<div class="file-section">
+  <div class="file-header">
+    <div class="file-number">12</div>
+    <div class="file-header-text">
+      <div class="file-title">Kampanie</div>
+      <div class="file-path">tests/e2e/campaigns.spec.ts</div>
+      <div class="file-meta">
+        <span class="badge badge-e2e">E2E</span>
+        <span class="badge badge-count">19 testów</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:#64748b;margin-bottom:16px;padding:8px 12px;background:#f0fdf4;border-radius:6px;border-left:3px solid #22c55e;">
+    Helperzy: <code>registerBrand()</code> rejestruje brand i kończy onboarding (Brand name + Crossfit). <code>createCampaign()</code> tworzy kampanię przez formularz i czeka na redirect do listy.
+  </p>
+
+  <div class="describe-block">
+    <div class="describe-title">Lista kampanii (beforeEach: registerBrand + goto '/dashboard/campaigns')</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E24</div>
+      <div class="test-body">
+        <div class="test-name">displays empty state when no campaigns exist</div>
+        <div class="test-desc">Nowy brand nie ma żadnych kampanii. Sprawdza tekst "No campaigns yet." i link "Create your first campaign →" — stan pusty z CTA.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E25</div>
+      <div class="test-body">
+        <div class="test-name">displays New Campaign button</div>
+        <div class="test-desc">Sprawdza widoczność linku "New Campaign" prowadzącego do formularza tworzenia kampanii.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E26</div>
+      <div class="test-body">
+        <div class="test-name">shows created campaign in the list</div>
+        <div class="test-desc">Tworzy kampanię "My First Campaign" przez <code>createCampaign()</code>. Po redirect na listę sprawdza widoczność tytułu kampanii.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E27</div>
+      <div class="test-body">
+        <div class="test-name">new campaign has draft status badge</div>
+        <div class="test-desc">Tworzy kampanię "Draft Campaign". Sprawdza <code>getByText('draft', { exact: true })</code> — szuka dokładnego dopasowania tekstu "draft" (badge statusu). Bez <code>{ exact: true }</code> Playwright znalazłby też tytuł "Draft Campaign" i opis, co spowodowałoby błąd strict mode.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Tworzenie kampanii (beforeEach: registerBrand + goto '/dashboard/campaigns/new')</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E28</div>
+      <div class="test-body">
+        <div class="test-name">displays the creation form</div>
+        <div class="test-desc">Sprawdza widoczność pól Title, Description, checkboxów Crossfit/Triathlon/Motorsports i przycisku "Create Campaign".</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E29</div>
+      <div class="test-body">
+        <div class="test-name">shows validation errors when fields are empty</div>
+        <div class="test-desc">Usuwa <code>required</code>, klika "Create Campaign". Serwer zwraca trzy błędy: "Title must be at least 3 characters.", "Description must be at least 10 characters.", "Select at least one discipline."</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E30</div>
+      <div class="test-body">
+        <div class="test-name">successful creation redirects to campaigns list and shows the campaign</div>
+        <div class="test-desc">Wypełnia tytuł "Launch Campaign", opis, zaznacza Triathlon, klika "Create Campaign". Sprawdza redirect na <code>/dashboard/campaigns</code> i widoczność tytułu kampanii na liście.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E31</div>
+      <div class="test-body">
+        <div class="test-name">Back to Campaigns link navigates to list</div>
+        <div class="test-desc">Klika link "Back to Campaigns" przez <code>getByRole('link', { name: /back to campaigns/i })</code>. Sprawdza redirect na <code>/dashboard/campaigns</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Podgląd kampanii (beforeEach: registerBrand + createCampaign + klik Preview)</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E32</div>
+      <div class="test-body">
+        <div class="test-name">displays campaign title and description</div>
+        <div class="test-desc">Na stronie podglądu (<code>/dashboard/campaigns/[id]</code>) sprawdza nagłówek "Preview Campaign" i tekst opisu "Full campaign description here."</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E33</div>
+      <div class="test-body">
+        <div class="test-name">displays campaign disciplines</div>
+        <div class="test-desc">Sprawdza, że tekst "Triathlon" jest widoczny na stronie podglądu — dyscyplina wyświetlana jako badge.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E34</div>
+      <div class="test-body">
+        <div class="test-name">displays Edit and Delete actions</div>
+        <div class="test-desc">Sprawdza widoczność linku "Edit" (prowadzącego do formularza edycji) i przycisku "Delete" (otwierającego dialog potwierdzenia).</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E35</div>
+      <div class="test-body">
+        <div class="test-name">Back to Campaigns link navigates to list</div>
+        <div class="test-desc">Klika "Back to Campaigns" na stronie podglądu. Sprawdza redirect na <code>/dashboard/campaigns</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Edycja kampanii (beforeEach: registerBrand + createCampaign + Preview + Edit)</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E36</div>
+      <div class="test-body">
+        <div class="test-name">pre-fills form with existing campaign data</div>
+        <div class="test-desc">Formularz edycji ma wypełniony tytuł "Original Title", opis "Original description text here." i zaznaczoną dyscyplinę Crossfit (<code>aria-checked="true"</code>).</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E37</div>
+      <div class="test-body">
+        <div class="test-name">successful update redirects to campaigns list and shows updated title</div>
+        <div class="test-desc">Czyści pole tytułu (<code>clear()</code>), wpisuje "Updated Title", klika "Save Changes". Sprawdza redirect na listę i widoczność nowego tytułu — aktualizacja zapisywana w Supabase.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E38</div>
+      <div class="test-body">
+        <div class="test-name">shows validation error when title is too short</div>
+        <div class="test-desc">Usuwa <code>required</code>, wpisuje "ab" (2 znaki — za krótki). Klika "Save Changes". Serwer zwraca "Title must be at least 3 characters." — weryfikuje walidację przy edycji.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E39</div>
+      <div class="test-body">
+        <div class="test-name">can change selected disciplines and changes are saved</div>
+        <div class="test-desc">Odznacza Crossfit, zaznacza Triathlon, klika "Save Changes". Czeka na <code>/dashboard/campaigns</code>, klika Preview. Sprawdza "Triathlon" jest widoczny i "Crossfit" NIE jest widoczny — zmiana dyscyplin trwale zapisana.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Wiele dyscyplin</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E40</div>
+      <div class="test-body">
+        <div class="test-name">all selected disciplines are saved and displayed in preview</div>
+        <div class="test-desc">Tworzy kampanię z zaznaczonymi Crossfit, Triathlon i Motorsports (wszystkie trzy). Po wejściu w Preview sprawdza, że wszystkie trzy są widoczne — weryfikuje poprawne przesyłanie wielu wartości przez FormData i zapisywanie w bazie.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="describe-block">
+    <div class="describe-title">Usuwanie kampanii</div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E41</div>
+      <div class="test-body">
+        <div class="test-name">deletes campaign and removes it from the list</div>
+        <div class="test-desc">Tworzy kampanię "To Be Deleted", wchodzi w Preview. Rejestruje handler dialogu <code>page.once('dialog', dialog => dialog.accept())</code> przed kliknięciem "Delete". Po akceptacji <code>window.confirm</code>: redirect na listę, kampania NIE jest widoczna.</div>
+      </div>
+    </div>
+
+    <div class="test-item e2e">
+      <div class="test-num">E42</div>
+      <div class="test-body">
+        <div class="test-name">cancelling deletion keeps the campaign</div>
+        <div class="test-desc">Ten sam scenariusz, ale <code>dialog.dismiss()</code> — anulowanie potwierdzenia. Kampania pozostaje, nagłówek "Keep This Campaign" jest nadal widoczny — weryfikuje, że anulowanie nie wywołuje usunięcia.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- SUMMARY TABLE -->
+<div class="summary-page">
+  <h2>Zestawienie testów według pliku</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Plik</th>
+        <th>Typ</th>
+        <th style="text-align:center">Testów</th>
+        <th>Testowane obszary</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td class="td-file">header.test.tsx</td>
+        <td class="td-type"><span class="badge badge-unit">Unit</span></td>
+        <td class="td-num">10</td>
+        <td>Renderowanie, linki nav, sign in/out, logo</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td class="td-file">discipline-picker.test.tsx</td>
+        <td class="td-type"><span class="badge badge-unit">Unit</span></td>
+        <td class="td-num">17</td>
+        <td>Renderowanie, defaultValue, toggle, hidden inputs, błędy</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td class="td-file">login/page.test.tsx</td>
+        <td class="td-type"><span class="badge badge-unit">Unit</span></td>
+        <td class="td-num">8</td>
+        <td>Renderowanie, błędy email/hasło/general, pending</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td class="td-file">register/page.test.tsx</td>
+        <td class="td-type"><span class="badge badge-unit">Unit</span></td>
+        <td class="td-num">12</td>
+        <td>Renderowanie, wybór typu konta, błędy serwera, pending</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td class="td-file">onboarding-form.test.tsx</td>
+        <td class="td-type"><span class="badge badge-unit">Unit</span></td>
+        <td class="td-num">12</td>
+        <td>Typy konta, DisciplinePicker, błędy serwera, pending</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td class="td-file">campaign-form.test.tsx</td>
+        <td class="td-type"><span class="badge badge-unit">Unit</span></td>
+        <td class="td-num">16</td>
+        <td>Tryb tworzenia i edycji, null disciplines, błędy, aria-invalid</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td class="td-file">delete-button.test.tsx</td>
+        <td class="td-type"><span class="badge badge-unit">Unit</span></td>
+        <td class="td-num">6</td>
+        <td>Renderowanie, hidden id, pending, błąd usuwania</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td class="td-file">registration.spec.ts</td>
+        <td class="td-type"><span class="badge badge-e2e">E2E</span></td>
+        <td class="td-num">5</td>
+        <td>Formularz, walidacja, redirect po rejestracji (athlete/brand)</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td class="td-file">login.spec.ts</td>
+        <td class="td-type"><span class="badge badge-e2e">E2E</span></td>
+        <td class="td-num">7</td>
+        <td>Formularz, walidacja, złe dane, redirect po logowaniu, wylogowanie</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td class="td-file">onboarding.spec.ts</td>
+        <td class="td-type"><span class="badge badge-e2e">E2E</span></td>
+        <td class="td-num">8</td>
+        <td>Athlete/brand formularz, walidacja, redirect, ochrona przed powrotem</td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td class="td-file">dashboard.spec.ts</td>
+        <td class="td-type"><span class="badge badge-e2e">E2E</span></td>
+        <td class="td-num">4</td>
+        <td>Kontrola dostępu, middleware auth, trasy brand-only</td>
+      </tr>
+      <tr>
+        <td>12</td>
+        <td class="td-file">campaigns.spec.ts</td>
+        <td class="td-type"><span class="badge badge-e2e">E2E</span></td>
+        <td class="td-num">19</td>
+        <td>Lista, tworzenie, podgląd, edycja, wiele dyscyplin, usuwanie</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">Łącznie</td>
+        <td class="td-num">124</td>
+        <td>81 jednostkowych + 43 E2E</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+</body>
+</html>

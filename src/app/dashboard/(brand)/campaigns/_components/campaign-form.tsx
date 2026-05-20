@@ -2,6 +2,7 @@
 
 import { useActionState } from 'react'
 import { createCampaign, updateCampaign } from '@/app/actions/campaigns'
+import { DisciplinePicker } from '@/components/discipline-picker/discipline-picker'
 import type { Campaign } from '@/types/campaign'
 import type { CampaignFormState } from '@/app/actions/campaigns'
 
@@ -65,6 +66,11 @@ export function CampaignForm({ campaign }: Props) {
           </p>
         )}
       </div>
+
+      <DisciplinePicker
+        defaultValue={campaign?.disciplines ?? []}
+        error={state?.errors?.disciplines?.[0]}
+      />
 
       {state?.errors?.general && (
         <p role="alert" className="text-sm text-red-400">

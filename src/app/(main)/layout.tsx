@@ -15,7 +15,7 @@ export default async function MainLayout({
 
   return (
     <>
-      <Header navigation={navigation} user={user} />
+      <Header navigation={navigation} user={user} showSignOut={!!user} />
       {children}
     </>
   );

@@ -77,19 +77,19 @@ describe('Registration', () => {
 
   describe('error states', () => {
     it('displays account type error from server', () => {
-      mockUseActionState.mockReturnValue([{ errors: { accountType: 'Select account type.' } }, vi.fn(), false])
+      mockUseActionState.mockReturnValue([{ errors: { accountType: ['Select account type.'] } }, vi.fn(), false])
       render(<Registration />)
       expect(screen.getByText('Select account type.')).toBeInTheDocument()
     })
 
     it('displays email error from server', () => {
-      mockUseActionState.mockReturnValue([{ errors: { email: 'Email is required.' } }, vi.fn(), false])
+      mockUseActionState.mockReturnValue([{ errors: { email: ['Email is required.'] } }, vi.fn(), false])
       render(<Registration />)
       expect(screen.getByText('Email is required.')).toBeInTheDocument()
     })
 
     it('displays password error from server', () => {
-      mockUseActionState.mockReturnValue([{ errors: { password: 'Password must be at least 8 characters.' } }, vi.fn(), false])
+      mockUseActionState.mockReturnValue([{ errors: { password: ['Password must be at least 8 characters.'] } }, vi.fn(), false])
       render(<Registration />)
       expect(screen.getByText('Password must be at least 8 characters.')).toBeInTheDocument()
     })

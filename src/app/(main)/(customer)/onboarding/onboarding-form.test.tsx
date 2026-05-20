@@ -42,27 +42,69 @@ describe('OnboardingForm', () => {
     })
   })
 
+  describe('discipline picker', () => {
+    it('renders discipline picker for athlete', () => {
+      render(<OnboardingForm accountType="athlete" />)
+      expect(screen.getByRole('checkbox', { name: 'Crossfit' })).toBeInTheDocument()
+      expect(screen.getByRole('checkbox', { name: 'Triathlon' })).toBeInTheDocument()
+      expect(screen.getByRole('checkbox', { name: 'Motorsports' })).toBeInTheDocument()
+    })
+
+    it('renders discipline picker for brand', () => {
+      render(<OnboardingForm accountType="brand" />)
+      expect(screen.getByRole('checkbox', { name: 'Crossfit' })).toBeInTheDocument()
+      expect(screen.getByRole('checkbox', { name: 'Triathlon' })).toBeInTheDocument()
+      expect(screen.getByRole('checkbox', { name: 'Motorsports' })).toBeInTheDocument()
+    })
+  })
+
   describe('error states', () => {
     it('displays first name error from server', () => {
-      mockUseActionState.mockReturnValue([{ errors: { first_name: 'First name is required.' } }, vi.fn(), false])
+      mockUseActionState.mockReturnValue([
+        { errors: { first_name: ['First name is required.'] } },
+        vi.fn(),
+        false,
+      ])
       render(<OnboardingForm accountType="athlete" />)
       expect(screen.getByText('First name is required.')).toBeInTheDocument()
     })
 
     it('displays last name error from server', () => {
-      mockUseActionState.mockReturnValue([{ errors: { last_name: 'Last name is required.' } }, vi.fn(), false])
+      mockUseActionState.mockReturnValue([
+        { errors: { last_name: ['Last name is required.'] } },
+        vi.fn(),
+        false,
+      ])
       render(<OnboardingForm accountType="athlete" />)
       expect(screen.getByText('Last name is required.')).toBeInTheDocument()
     })
 
     it('displays brand name error from server', () => {
-      mockUseActionState.mockReturnValue([{ errors: { brand_name: 'Brand name is required.' } }, vi.fn(), false])
+      mockUseActionState.mockReturnValue([
+        { errors: { brand_name: ['Brand name is required.'] } },
+        vi.fn(),
+        false,
+      ])
       render(<OnboardingForm accountType="brand" />)
       expect(screen.getByText('Brand name is required.')).toBeInTheDocument()
     })
 
+    it('displays disciplines error from server', () => {
+      mockUseActionState.mockReturnValue([
+        { errors: { disciplines: ['Select at least one discipline.'] } },
+        vi.fn(),
+        false,
+      ])
+      render(<OnboardingForm accountType="athlete" />)
+      expect(screen.getByText('Select at least one discipline.')).toBeInTheDocument()
+    })
+
     it('displays general error from server', () => {
-      mockUseActionState.mockReturnValue([{ errors: { general: 'Not authenticated.' } }, vi.fn(), false])
+      mockUseActionState.mockReturnValue([
+        { errors: { general: 'Not authenticated.' } },
+        vi.fn(),
+        false,
+      ])
       render(<OnboardingForm accountType="athlete" />)
       expect(screen.getByText('Not authenticated.')).toBeInTheDocument()
     })

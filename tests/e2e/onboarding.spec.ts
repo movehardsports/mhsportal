@@ -29,11 +29,13 @@ test.describe('Onboarding — athlete', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(page.getByText('First name is required.')).toBeVisible()
     await expect(page.getByText('Last name is required.')).toBeVisible()
+    await expect(page.getByText('Select at least one discipline.')).toBeVisible()
   })
 
   test('redirects to home on successful submission', async ({ page }) => {
     await page.getByLabel('First name').fill('John')
     await page.getByLabel('Last name').fill('Doe')
+    await page.getByRole('checkbox', { name: 'Crossfit' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page).toHaveURL('/dashboard')
@@ -45,6 +47,7 @@ test.describe('Onboarding — already completed', () => {
     await registerUser(page, 'Athlete')
     await page.getByLabel('First name').fill('John')
     await page.getByLabel('Last name').fill('Doe')
+    await page.getByRole('checkbox', { name: 'Crossfit' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForURL('/dashboard')
 
@@ -68,10 +71,12 @@ test.describe('Onboarding — brand', () => {
     )
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(page.getByText('Brand name is required.')).toBeVisible()
+    await expect(page.getByText('Select at least one discipline.')).toBeVisible()
   })
 
   test('redirects to home on successful submission', async ({ page }) => {
     await page.getByLabel('Brand name').fill('Nike')
+    await page.getByRole('checkbox', { name: 'Crossfit' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page).toHaveURL('/dashboard')

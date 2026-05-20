@@ -16,6 +16,7 @@ async function registerUser(page: Page, accountType: 'Athlete' | 'Brand'): Promi
 async function completeOnboarding(page: Page) {
   await page.getByLabel('First name').fill('Test')
   await page.getByLabel('Last name').fill('User')
+  await page.getByRole('checkbox', { name: 'Crossfit' }).click()
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.waitForURL('/dashboard')
 }
