@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/dal'
 import { z } from 'zod'
+import { DISCIPLINE_IDS } from '@/types/discipline'
 
 const CampaignSchema = z.object({
   title: z
@@ -16,12 +17,16 @@ const CampaignSchema = z.object({
     .min(10, { error: 'Description must be at least 10 characters.' })
     .max(5000, { error: 'Description must be at most 5000 characters.' })
     .trim(),
+  disciplines: z
+    .array(z.enum(DISCIPLINE_IDS))
+    .min(1, { error: 'Select at least one discipline.' }),
 })
 
 export type CampaignFormState = {
   errors?: {
     title?: string[]
     description?: string[]
+    disciplines?: string[]
     general?: string
   }
 } | undefined
@@ -35,6 +40,7 @@ export async function createCampaign(
   const parsed = CampaignSchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
+    disciplines: formData.getAll('disciplines').filter((v): v is string => typeof v === 'string'),
   })
 
   if (!parsed.success) {
@@ -51,6 +57,7 @@ export async function createCampaign(
     brand_id: profile.id,
     title: parsed.data.title,
     description: parsed.data.description,
+    disciplines: parsed.data.disciplines,
   })
 
   if (error) {
@@ -69,6 +76,7 @@ export async function updateCampaign(
   const parsed = CampaignSchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
+    disciplines: formData.getAll('disciplines').filter((v): v is string => typeof v === 'string'),
   })
 
   if (!parsed.success) {
@@ -83,7 +91,7 @@ export async function updateCampaign(
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('campaigns')
-    .update({ title: parsed.data.title, description: parsed.data.description })
+    .update({ title: parsed.data.title, description: parsed.data.description, disciplines: parsed.data.disciplines })
     .eq('id', id)
     .eq('brand_id', profile.id)
     .select('id')

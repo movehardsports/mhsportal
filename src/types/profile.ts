@@ -1,9 +1,12 @@
+import type { Discipline } from './discipline'
+
 type BaseProfile = {
   id: string
   account_type: 'athlete' | 'brand'
   onboarding_completed: boolean
   created_at: string
   updated_at: string
+  disciplines: Discipline[] | null
 }
 
 export type AthleteProfile = BaseProfile & {

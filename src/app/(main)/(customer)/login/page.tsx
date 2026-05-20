@@ -32,7 +32,7 @@ export default function Login() {
               />
             </div>
             {state?.errors?.email && (
-              <p className="mt-2 text-sm text-red-400">{state.errors.email}</p>
+              <p className="mt-2 text-sm text-red-400">{state.errors.email[0]}</p>
             )}
           </div>
 
@@ -51,7 +51,7 @@ export default function Login() {
               />
             </div>
             {state?.errors?.password && (
-              <p className="mt-2 text-sm text-red-400">{state.errors.password}</p>
+              <p className="mt-2 text-sm text-red-400">{state.errors.password[0]}</p>
             )}
           </div>
 

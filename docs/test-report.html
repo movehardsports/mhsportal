@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Rozpiska testów — MHS</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    color: #1a1a2e;
+    background: #fff;
+    padding: 32px 40px;
+    line-height: 1.5;
+  }
+
+  /* ── Cover ── */
+  .cover {
+    text-align: center;
+    padding: 60px 0 40px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 40px;
+  }
+  .cover h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a2e;
+    letter-spacing: -0.5px;
+  }
+  .cover .subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 8px;
+  }
+  .cover .meta {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+  }
+  .cover .meta-item {
+    text-align: center;
+  }
+  .cover .meta-item .num {
+    font-size: 36px;
+    font-weight: 700;
+    color: #4f46e5;
+    display: block;
+  }
+  .cover .meta-item .label {
+    font-size: 11px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 36px;
+    page-break-inside: avoid;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    page-break-after: avoid;
+  }
+  .section-header.e2e { background: #ede9fe; }
+  .section-header.unit { background: #e0f2fe; }
+
+  .section-header .tag {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+  .tag-e2e { background: #7c3aed; color: #fff; }
+  .tag-unit { background: #0284c7; color: #fff; }
+
+  .section-header .title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    flex: 1;
+  }
+  .section-header .file {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: #64748b;
+  }
+  .section-header .count {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  /* ── Describe block ── */
+  .describe {
+    margin-bottom: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .describe-header {
+    padding: 7px 14px;
+    font-weight: 600;
+    font-size: 11px;
+    color: #334155;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  /* ── Test rows ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  td {
+    padding: 6px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+
+  .td-num {
+    width: 28px;
+    color: #94a3b8;
+    font-size: 10px;
+    text-align: right;
+    padding-right: 8px;
+    white-space: nowrap;
+  }
+  .td-name {
+    color: #1e293b;
+    font-size: 11px;
+  }
+  .td-file {
+    width: 60px;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    color: #94a3b8;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .td-status {
+    width: 20px;
+    text-align: center;
+    font-size: 12px;
+  }
+  .td-fix {
+    width: 130px;
+    font-size: 9px;
+    color: #dc2626;
+    font-style: italic;
+  }
+
+  /* badges */
+  .badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 99px;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+  .badge-fixed   { background: #fef3c7; color: #92400e; }
+  .badge-pass    { background: #dcfce7; color: #166534; }
+  .badge-skip    { background: #f1f5f9; color: #64748b; }
+
+  /* ── Summary table ── */
+  .summary {
+    margin-top: 40px;
+    page-break-before: always;
+  }
+  .summary h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+  }
+  .sum-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .sum-table thead tr {
+    background: #1e293b;
+    color: #fff;
+  }
+  .sum-table thead td {
+    padding: 8px 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .sum-table tbody tr:nth-child(even) td { background: #f8fafc; }
+  .sum-table tbody td { padding: 7px 14px; border-bottom: 1px solid #e2e8f0; }
+
+  .sum-table .total-row td {
+    font-weight: 700;
+    background: #f1f5f9;
+    border-top: 2px solid #e2e8f0;
+  }
+  .num-pass { color: #16a34a; font-weight: 700; }
+  .num-fail { color: #dc2626; font-weight: 700; }
+  .num-fix  { color: #d97706; font-weight: 700; }
+
+  /* ── Fixes legend ── */
+  .fixes {
+    margin-top: 32px;
+  }
+  .fixes h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+  }
+  .fix-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .fix-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #fde68a;
+    background: #fffbeb;
+  }
+  .fix-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: #92400e;
+    min-width: 20px;
+    text-align: center;
+    margin-top: 1px;
+  }
+  .fix-content { flex: 1; }
+  .fix-title { font-weight: 600; font-size: 11px; color: #1e293b; }
+  .fix-file  { font-family: 'Courier New', monospace; font-size: 10px; color: #64748b; margin-top: 2px; }
+  .fix-desc  { font-size: 10px; color: #4b5563; margin-top: 4px; }
+
+  @media print {
+    body { padding: 20px 28px; }
+    .section { page-break-inside: auto; }
+    .describe { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover">
+  <h1>Rozpiska testów — MHS</h1>
+  <div class="subtitle">Move Hard Sports · Playwright E2E + Vitest Unit Tests</div>
+  <div class="meta">
+    <div class="meta-item"><span class="num">50</span><span class="label">Testów łącznie</span></div>
+    <div class="meta-item"><span class="num" style="color:#16a34a">44</span><span class="label">Przechodzi</span></div>
+    <div class="meta-item"><span class="num" style="color:#d97706">6</span><span class="label">Naprawionych</span></div>
+    <div class="meta-item"><span class="num" style="color:#0284c7">11</span><span class="label">Plików testowych</span></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 1 — E2E: login.spec.ts
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header e2e">
+    <span class="tag tag-e2e">E2E</span>
+    <span class="title">Login &amp; Sign Out</span>
+    <span class="file">tests/e2e/login.spec.ts</span>
+    <span class="count">7 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Login</div>
+    <table>
+      <tr>
+        <td class="td-num">1</td>
+        <td class="td-name">displays the login form</td>
+        <td class="td-file">:35</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">2</td>
+        <td class="td-name">shows validation errors when fields are empty
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:43</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #1 — SignInSchema email</td>
+      </tr>
+      <tr>
+        <td class="td-num">3</td>
+        <td class="td-name">shows error for invalid credentials
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:52</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #2 — komunikat błędu</td>
+      </tr>
+      <tr>
+        <td class="td-num">4</td>
+        <td class="td-name">successful login redirects to /onboarding when onboarding not completed
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:59</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #3 — showSignOut layout</td>
+      </tr>
+      <tr>
+        <td class="td-num">5</td>
+        <td class="td-name">successful login redirects to /dashboard when onboarding is completed</td>
+        <td class="td-file">:71</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Sign out</div>
+    <table>
+      <tr>
+        <td class="td-num">6</td>
+        <td class="td-name">dashboard header shows sign out button when logged in
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:86</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #3 — showSignOut layout</td>
+      </tr>
+      <tr>
+        <td class="td-num">7</td>
+        <td class="td-name">sign out redirects to homepage
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:92</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #3 — showSignOut layout</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 2 — E2E: onboarding.spec.ts
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header e2e">
+    <span class="tag tag-e2e">E2E</span>
+    <span class="title">Onboarding</span>
+    <span class="file">tests/e2e/onboarding.spec.ts</span>
+    <span class="count">7 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Onboarding — athlete</div>
+    <table>
+      <tr>
+        <td class="td-num">8</td>
+        <td class="td-name">displays form with first name and last name fields</td>
+        <td class="td-file">:19</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">9</td>
+        <td class="td-name">shows server validation errors when fields are empty</td>
+        <td class="td-file">:25</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">10</td>
+        <td class="td-name">redirects to home on successful submission</td>
+        <td class="td-file">:35</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Onboarding — already completed</div>
+    <table>
+      <tr>
+        <td class="td-num">11</td>
+        <td class="td-name">redirects to home if onboarding already done</td>
+        <td class="td-file">:46</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Onboarding — brand</div>
+    <table>
+      <tr>
+        <td class="td-num">12</td>
+        <td class="td-name">displays form with brand name field</td>
+        <td class="td-file">:64</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">13</td>
+        <td class="td-name">shows server validation error when field is empty</td>
+        <td class="td-file">:68</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">14</td>
+        <td class="td-name">redirects to home on successful submission</td>
+        <td class="td-file">:77</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 3 — E2E: dashboard.spec.ts
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header e2e">
+    <span class="tag tag-e2e">E2E</span>
+    <span class="title">Dashboard Access Control</span>
+    <span class="file">tests/e2e/dashboard.spec.ts</span>
+    <span class="count">4 testy</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Dashboard access control</div>
+    <table>
+      <tr>
+        <td class="td-num">15</td>
+        <td class="td-name">unauthenticated user is redirected to /login</td>
+        <td class="td-file">:15</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">16</td>
+        <td class="td-name">authenticated user without completed onboarding is redirected to /onboarding</td>
+        <td class="td-file">:20</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">17</td>
+        <td class="td-name">authenticated user with completed onboarding can access dashboard</td>
+        <td class="td-file">:26</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Brand-only routes</div>
+    <table>
+      <tr>
+        <td class="td-num">18</td>
+        <td class="td-name">athlete account is redirected from /dashboard/campaigns to /dashboard</td>
+        <td class="td-file">:37</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 4 — E2E: campaigns.spec.ts
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header e2e">
+    <span class="tag tag-e2e">E2E</span>
+    <span class="title">Campaigns</span>
+    <span class="file">tests/e2e/campaigns.spec.ts</span>
+    <span class="count">19 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Campaign list</div>
+    <table>
+      <tr>
+        <td class="td-num">19</td>
+        <td class="td-name">displays empty state when no campaigns exist</td>
+        <td class="td-file">:33</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">20</td>
+        <td class="td-name">displays New Campaign button</td>
+        <td class="td-file">:38</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">21</td>
+        <td class="td-name">shows created campaign in the list</td>
+        <td class="td-file">:42</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">22</td>
+        <td class="td-name">new campaign has draft status badge
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:47</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #4 — exact: true</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Campaign creation</div>
+    <table>
+      <tr>
+        <td class="td-num">23</td>
+        <td class="td-name">displays the creation form</td>
+        <td class="td-file">:59</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">24</td>
+        <td class="td-name">shows validation errors when fields are empty</td>
+        <td class="td-file">:68</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">25</td>
+        <td class="td-name">successful creation redirects to campaigns list and shows the campaign</td>
+        <td class="td-file">:78</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">26</td>
+        <td class="td-name">Back to Campaigns link navigates to list</td>
+        <td class="td-file">:88</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Campaign preview</div>
+    <table>
+      <tr>
+        <td class="td-num">27</td>
+        <td class="td-name">displays campaign title and description</td>
+        <td class="td-file">:101</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">28</td>
+        <td class="td-name">displays campaign disciplines</td>
+        <td class="td-file">:106</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">29</td>
+        <td class="td-name">displays Edit and Delete actions</td>
+        <td class="td-file">:110</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">30</td>
+        <td class="td-name">Back to Campaigns link navigates to list</td>
+        <td class="td-file">:115</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Campaign edit</div>
+    <table>
+      <tr>
+        <td class="td-num">31</td>
+        <td class="td-name">pre-fills form with existing campaign data</td>
+        <td class="td-file">:129</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">32</td>
+        <td class="td-name">successful update redirects to campaigns list and shows updated title</td>
+        <td class="td-file">:135</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">33</td>
+        <td class="td-name">shows validation error when title is too short</td>
+        <td class="td-file">:144</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">34</td>
+        <td class="td-name">can change selected disciplines and changes are saved</td>
+        <td class="td-file">:155</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Multiple disciplines</div>
+    <table>
+      <tr>
+        <td class="td-num">35</td>
+        <td class="td-name">all selected disciplines are saved and displayed in preview</td>
+        <td class="td-file">:168</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">Campaign deletion</div>
+    <table>
+      <tr>
+        <td class="td-num">36</td>
+        <td class="td-name">deletes campaign and removes it from the list</td>
+        <td class="td-file">:187</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">37</td>
+        <td class="td-name">cancelling deletion keeps the campaign</td>
+        <td class="td-file">:199</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 5 — Unit: header.test.tsx
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header unit">
+    <span class="tag tag-unit">Unit</span>
+    <span class="title">Header</span>
+    <span class="file">src/components/header/header.test.tsx</span>
+    <span class="count">9 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">when user is not logged in</div>
+    <table>
+      <tr>
+        <td class="td-num">38</td>
+        <td class="td-name">renders navigation links</td>
+        <td class="td-file">:25</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">39</td>
+        <td class="td-name">renders sign in link pointing to /login</td>
+        <td class="td-file">:30</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">40</td>
+        <td class="td-name">renders join link pointing to /register</td>
+        <td class="td-file">:37</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">41</td>
+        <td class="td-name">renders logo image</td>
+        <td class="td-file">:44</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">42</td>
+        <td class="td-name">renders mobile menu button with screen reader label</td>
+        <td class="td-file">:49</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">when user is logged in</div>
+    <table>
+      <tr>
+        <td class="td-num">43</td>
+        <td class="td-name">renders dashboard link</td>
+        <td class="td-file">:59</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">44</td>
+        <td class="td-name">does not render sign in link</td>
+        <td class="td-file">:65</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">when showSignOut is true</div>
+    <table>
+      <tr>
+        <td class="td-num">45</td>
+        <td class="td-name">renders navigation links</td>
+        <td class="td-file">:72</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">46</td>
+        <td class="td-name">renders sign out button</td>
+        <td class="td-file">:78</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">47</td>
+        <td class="td-name">does not render sign in link</td>
+        <td class="td-file">:84</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 6 — Unit: login/page.test.tsx
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header unit">
+    <span class="tag tag-unit">Unit</span>
+    <span class="title">Login Page</span>
+    <span class="file">src/app/(main)/(customer)/login/page.test.tsx</span>
+    <span class="count">8 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">rendering</div>
+    <table>
+      <tr>
+        <td class="td-num">48</td>
+        <td class="td-name">renders the page heading</td>
+        <td class="td-file">:26</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">49</td>
+        <td class="td-name">renders email and password fields</td>
+        <td class="td-file">:30</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">50</td>
+        <td class="td-name">renders the Sign In button</td>
+        <td class="td-file">:35</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">51</td>
+        <td class="td-name">renders sign up link pointing to /register</td>
+        <td class="td-file">:40</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">error states</div>
+    <table>
+      <tr>
+        <td class="td-num">52</td>
+        <td class="td-name">displays email error from server
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:49</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #5 — mock string[]</td>
+      </tr>
+      <tr>
+        <td class="td-num">53</td>
+        <td class="td-name">displays password error from server
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:54</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #5 — mock string[]</td>
+      </tr>
+      <tr>
+        <td class="td-num">54</td>
+        <td class="td-name">displays general error from server</td>
+        <td class="td-file">:61</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">pending state</div>
+    <table>
+      <tr>
+        <td class="td-num">55</td>
+        <td class="td-name">shows Signing in... and disables button while submitting</td>
+        <td class="td-file">:69</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 7 — Unit: register/page.test.tsx
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header unit">
+    <span class="tag tag-unit">Unit</span>
+    <span class="title">Register Page</span>
+    <span class="file">src/app/(main)/(customer)/register/page.test.tsx</span>
+    <span class="count">11 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">rendering</div>
+    <table>
+      <tr>
+        <td class="td-num">56</td>
+        <td class="td-name">renders account type selection buttons</td>
+        <td class="td-file">:27</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">57</td>
+        <td class="td-name">renders email and password fields</td>
+        <td class="td-file">:32</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">58</td>
+        <td class="td-name">renders the Join button</td>
+        <td class="td-file">:37</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">59</td>
+        <td class="td-name">renders sign in link pointing to /login</td>
+        <td class="td-file">:42</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">account type selection</div>
+    <table>
+      <tr>
+        <td class="td-num">60</td>
+        <td class="td-name">Athlete button is not pressed by default</td>
+        <td class="td-file">:51</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">61</td>
+        <td class="td-name">clicking Athlete marks it as pressed</td>
+        <td class="td-file">:56</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">62</td>
+        <td class="td-name">clicking Brand marks it as pressed and deselects Athlete</td>
+        <td class="td-file">:66</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">error states</div>
+    <table>
+      <tr>
+        <td class="td-num">63</td>
+        <td class="td-name">displays account type error from server
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:79</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #6 — mock string[]</td>
+      </tr>
+      <tr>
+        <td class="td-num">64</td>
+        <td class="td-name">displays email error from server
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:85</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #6 — mock string[]</td>
+      </tr>
+      <tr>
+        <td class="td-num">65</td>
+        <td class="td-name">displays password error from server
+          <span class="badge badge-fixed">NAPRAWIONY</span></td>
+        <td class="td-file">:90</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix">Fix #6 — mock string[]</td>
+      </tr>
+      <tr>
+        <td class="td-num">66</td>
+        <td class="td-name">displays general error from server</td>
+        <td class="td-file">:97</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">pending state</div>
+    <table>
+      <tr>
+        <td class="td-num">67</td>
+        <td class="td-name">shows Joining... and disables button while submitting</td>
+        <td class="td-file">:105</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 8 — Unit: onboarding-form.test.tsx
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header unit">
+    <span class="tag tag-unit">Unit</span>
+    <span class="title">OnboardingForm</span>
+    <span class="file">src/app/(main)/(customer)/onboarding/onboarding-form.test.tsx</span>
+    <span class="count">9 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">athlete</div>
+    <table>
+      <tr>
+        <td class="td-num">68</td>
+        <td class="td-name">renders first name and last name fields</td>
+        <td class="td-file">:20</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">69</td>
+        <td class="td-name">does not render brand name field</td>
+        <td class="td-file">:26</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">brand</div>
+    <table>
+      <tr>
+        <td class="td-num">70</td>
+        <td class="td-name">renders brand name field</td>
+        <td class="td-file">:33</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">71</td>
+        <td class="td-name">does not render first name and last name fields</td>
+        <td class="td-file">:38</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">discipline picker</div>
+    <table>
+      <tr>
+        <td class="td-num">72</td>
+        <td class="td-name">renders discipline picker for athlete</td>
+        <td class="td-file">:46</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">73</td>
+        <td class="td-name">renders discipline picker for brand</td>
+        <td class="td-file">:53</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">error states</div>
+    <table>
+      <tr>
+        <td class="td-num">74</td>
+        <td class="td-name">displays first name error from server</td>
+        <td class="td-file">:62</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">75</td>
+        <td class="td-name">displays last name error from server</td>
+        <td class="td-file">:71</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">76</td>
+        <td class="td-name">displays brand name error from server</td>
+        <td class="td-file">:80</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">77</td>
+        <td class="td-name">displays disciplines error from server</td>
+        <td class="td-file">:92</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">78</td>
+        <td class="td-name">displays general error from server</td>
+        <td class="td-file">:102</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">pending state</div>
+    <table>
+      <tr>
+        <td class="td-num">79</td>
+        <td class="td-name">shows Saving... and disables button while submitting</td>
+        <td class="td-file">:114</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 9 — Unit: discipline-picker.test.tsx
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header unit">
+    <span class="tag tag-unit">Unit</span>
+    <span class="title">DisciplinePicker</span>
+    <span class="file">src/components/discipline-picker/discipline-picker.test.tsx</span>
+    <span class="count">17 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">rendering</div>
+    <table>
+      <tr>
+        <td class="td-num">80</td>
+        <td class="td-name">renders all three disciplines</td>
+        <td class="td-file">:8</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">81</td>
+        <td class="td-name">renders Disciplines legend</td>
+        <td class="td-file">:15</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">82</td>
+        <td class="td-name">all disciplines start unchecked</td>
+        <td class="td-file">:20</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">83</td>
+        <td class="td-name">renders no hidden inputs when nothing is selected</td>
+        <td class="td-file">:27</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">defaultValue</div>
+    <table>
+      <tr>
+        <td class="td-num">84</td>
+        <td class="td-name">pre-selects disciplines from defaultValue</td>
+        <td class="td-file">:34</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">85</td>
+        <td class="td-name">renders hidden inputs for pre-selected disciplines</td>
+        <td class="td-file">:41</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">toggle behavior</div>
+    <table>
+      <tr>
+        <td class="td-num">86</td>
+        <td class="td-name">clicking a discipline selects it</td>
+        <td class="td-file">:48</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">87</td>
+        <td class="td-name">clicking a selected discipline deselects it</td>
+        <td class="td-file">:57</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">88</td>
+        <td class="td-name">selecting one discipline does not affect others</td>
+        <td class="td-file">:66</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">89</td>
+        <td class="td-name">multiple disciplines can be selected simultaneously</td>
+        <td class="td-file">:76</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">hidden inputs</div>
+    <table>
+      <tr>
+        <td class="td-num">90</td>
+        <td class="td-name">adds a hidden input when a discipline is selected</td>
+        <td class="td-file">:90</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">91</td>
+        <td class="td-name">renders one hidden input per selected discipline</td>
+        <td class="td-file">:99</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">92</td>
+        <td class="td-name">removes hidden input when discipline is deselected</td>
+        <td class="td-file">:109</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">93</td>
+        <td class="td-name">uses the name prop for hidden inputs</td>
+        <td class="td-file">:118</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">error state</div>
+    <table>
+      <tr>
+        <td class="td-num">94</td>
+        <td class="td-name">displays error message when provided</td>
+        <td class="td-file">:129</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">95</td>
+        <td class="td-name">error message has aria-live="polite"</td>
+        <td class="td-file">:134</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">96</td>
+        <td class="td-name">does not display error element when no error is provided</td>
+        <td class="td-file">:139</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 10 — Unit: campaign-form.test.tsx
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header unit">
+    <span class="tag tag-unit">Unit</span>
+    <span class="title">CampaignForm</span>
+    <span class="file">src/app/dashboard/(brand)/campaigns/_components/campaign-form.test.tsx</span>
+    <span class="count">16 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">create mode (no campaign prop)</div>
+    <table>
+      <tr>
+        <td class="td-num">97</td>
+        <td class="td-name">renders title and description fields</td>
+        <td class="td-file">:35</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">98</td>
+        <td class="td-name">renders discipline picker with all options</td>
+        <td class="td-file">:41</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">99</td>
+        <td class="td-name">renders Create Campaign button</td>
+        <td class="td-file">:48</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">100</td>
+        <td class="td-name">title and description inputs start empty</td>
+        <td class="td-file">:53</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">101</td>
+        <td class="td-name">all disciplines start unchecked</td>
+        <td class="td-file">:59</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">edit mode (with campaign prop)</div>
+    <table>
+      <tr>
+        <td class="td-num">102</td>
+        <td class="td-name">pre-fills title and description from campaign</td>
+        <td class="td-file">:68</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">103</td>
+        <td class="td-name">pre-selects disciplines from campaign</td>
+        <td class="td-file">:74</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">104</td>
+        <td class="td-name">renders Save Changes button</td>
+        <td class="td-file">:81</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">105</td>
+        <td class="td-name">handles campaign with null disciplines</td>
+        <td class="td-file">:86</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">error states</div>
+    <table>
+      <tr>
+        <td class="td-num">106</td>
+        <td class="td-name">displays title error</td>
+        <td class="td-file">:93</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">107</td>
+        <td class="td-name">title input has aria-invalid when there is an error</td>
+        <td class="td-file">:103</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">108</td>
+        <td class="td-name">displays description error</td>
+        <td class="td-file">:113</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">109</td>
+        <td class="td-name">displays disciplines error via DisciplinePicker</td>
+        <td class="td-file">:123</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">110</td>
+        <td class="td-name">displays general error</td>
+        <td class="td-file">:133</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">pending state</div>
+    <table>
+      <tr>
+        <td class="td-num">111</td>
+        <td class="td-name">shows Creating... and disables button in create mode</td>
+        <td class="td-file">:145</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">112</td>
+        <td class="td-name">shows Saving... and disables button in edit mode</td>
+        <td class="td-file">:151</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     SEKCJA 11 — Unit: delete-button.test.tsx
+════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header unit">
+    <span class="tag tag-unit">Unit</span>
+    <span class="title">DeleteButton</span>
+    <span class="file">src/app/dashboard/(brand)/campaigns/_components/delete-button.test.tsx</span>
+    <span class="count">6 testów</span>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">rendering</div>
+    <table>
+      <tr>
+        <td class="td-num">113</td>
+        <td class="td-name">renders Delete button</td>
+        <td class="td-file">:20</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">114</td>
+        <td class="td-name">renders hidden input with the campaign id</td>
+        <td class="td-file">:25</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">115</td>
+        <td class="td-name">button is enabled by default</td>
+        <td class="td-file">:30</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">pending state</div>
+    <table>
+      <tr>
+        <td class="td-num">116</td>
+        <td class="td-name">shows Deleting... while pending</td>
+        <td class="td-file">:37</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+      <tr>
+        <td class="td-num">117</td>
+        <td class="td-name">disables button while pending</td>
+        <td class="td-file">:43</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="describe">
+    <div class="describe-header">error state</div>
+    <table>
+      <tr>
+        <td class="td-num">118</td>
+        <td class="td-name">displays error message when deletion fails</td>
+        <td class="td-file">:51</td>
+        <td class="td-status">✅</td>
+        <td class="td-fix"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PODSUMOWANIE + LISTA POPRAWEK
+════════════════════════════════════════ -->
+<div class="summary">
+  <h2>Podsumowanie</h2>
+  <table class="sum-table">
+    <thead>
+      <tr>
+        <td>Plik testowy</td>
+        <td>Typ</td>
+        <td style="text-align:center">Łącznie</td>
+        <td style="text-align:center">✅ Przechodzi</td>
+        <td style="text-align:center">🔧 Naprawione</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>tests/e2e/login.spec.ts</td>
+        <td>E2E</td>
+        <td style="text-align:center">7</td>
+        <td style="text-align:center"><span class="num-pass">7</span></td>
+        <td style="text-align:center"><span class="num-fix">3</span></td>
+      </tr>
+      <tr>
+        <td>tests/e2e/onboarding.spec.ts</td>
+        <td>E2E</td>
+        <td style="text-align:center">7</td>
+        <td style="text-align:center"><span class="num-pass">7</span></td>
+        <td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>tests/e2e/dashboard.spec.ts</td>
+        <td>E2E</td>
+        <td style="text-align:center">4</td>
+        <td style="text-align:center"><span class="num-pass">4</span></td>
+        <td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>tests/e2e/campaigns.spec.ts</td>
+        <td>E2E</td>
+        <td style="text-align:center">19</td>
+        <td style="text-align:center"><span class="num-pass">19</span></td>
+        <td style="text-align:center"><span class="num-fix">1</span></td>
+      </tr>
+      <tr>
+        <td>src/.../header/header.test.tsx</td>
+        <td>Unit</td>
+        <td style="text-align:center">9</td>
+        <td style="text-align:center"><span class="num-pass">9</span></td>
+        <td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>src/.../login/page.test.tsx</td>
+        <td>Unit</td>
+        <td style="text-align:center">8</td>
+        <td style="text-align:center"><span class="num-pass">8</span></td>
+        <td style="text-align:center"><span class="num-fix">2</span></td>
+      </tr>
+      <tr>
+        <td>src/.../register/page.test.tsx</td>
+        <td>Unit</td>
+        <td style="text-align:center">11</td>
+        <td style="text-align:center"><span class="num-pass">11</span></td>
+        <td style="text-align:center"><span class="num-fix">3</span></td>
+      </tr>
+      <tr>
+        <td>src/.../onboarding/onboarding-form.test.tsx</td>
+        <td>Unit</td>
+        <td style="text-align:center">12</td>
+        <td style="text-align:center"><span class="num-pass">12</span></td>
+        <td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>src/.../discipline-picker/discipline-picker.test.tsx</td>
+        <td>Unit</td>
+        <td style="text-align:center">17</td>
+        <td style="text-align:center"><span class="num-pass">17</span></td>
+        <td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>src/.../campaigns/_components/campaign-form.test.tsx</td>
+        <td>Unit</td>
+        <td style="text-align:center">16</td>
+        <td style="text-align:center"><span class="num-pass">16</span></td>
+        <td style="text-align:center">—</td>
+      </tr>
+      <tr>
+        <td>src/.../campaigns/_components/delete-button.test.tsx</td>
+        <td>Unit</td>
+        <td style="text-align:center">6</td>
+        <td style="text-align:center"><span class="num-pass">6</span></td>
+        <td style="text-align:center">—</td>
+      </tr>
+      <tr class="total-row">
+        <td><strong>RAZEM</strong></td>
+        <td></td>
+        <td style="text-align:center"><strong>116</strong></td>
+        <td style="text-align:center"><strong class="num-pass">116</strong></td>
+        <td style="text-align:center"><strong class="num-fix">9</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="fixes" style="margin-top: 32px;">
+  <h2>Lista poprawek</h2>
+  <div class="fix-list">
+
+    <div class="fix-item">
+      <div class="fix-num">#1</div>
+      <div class="fix-content">
+        <div class="fix-title">SignInSchema — walidacja pustego emaila</div>
+        <div class="fix-file">src/app/actions/auth.ts</div>
+        <div class="fix-desc">Zmieniono <code>z.email()</code> na <code>z.string().min(1).email()</code> — pusty email zwracał "Enter a valid email address." zamiast wymaganego przez test "Email is required."</div>
+      </div>
+    </div>
+
+    <div class="fix-item">
+      <div class="fix-num">#2</div>
+      <div class="fix-content">
+        <div class="fix-title">signIn — komunikat błędu nieprawidłowych danych logowania</div>
+        <div class="fix-file">src/app/actions/auth.ts</div>
+        <div class="fix-desc">"Invalid email or password." → "Invalid login credentials." — test E2E sprawdzał regexem <code>/invalid login credentials/i</code>, stary komunikat nie pasował.</div>
+      </div>
+    </div>
+
+    <div class="fix-item">
+      <div class="fix-num">#3</div>
+      <div class="fix-content">
+        <div class="fix-title">Main layout — przycisk Sign Out dla zalogowanych użytkowników</div>
+        <div class="fix-file">src/app/(main)/layout.tsx</div>
+        <div class="fix-desc">Dodano <code>showSignOut=&#123;!!user&#125;</code>. Użytkownik bez ukończonego onboardingu trafiał na <code>/onboarding</code> (redirect z <code>/dashboard</code>), gdzie nie było przycisku Sign Out — testy 4, 6, 7 nie mogły się wylogować.</div>
+      </div>
+    </div>
+
+    <div class="fix-item">
+      <div class="fix-num">#4</div>
+      <div class="fix-content">
+        <div class="fix-title">Kampanie — strict mode violation przy getByText('draft')</div>
+        <div class="fix-file">tests/e2e/campaigns.spec.ts</div>
+        <div class="fix-desc">Dodano <code>&#123; exact: true &#125;</code>. <code>getByText('draft')</code> (case-insensitive substring) dopasowywał 3 elementy: tytuł "Draft Campaign", opis "...in draft state." i badge statusu — strict mode wymaga dokładnie jednego.</div>
+      </div>
+    </div>
+
+    <div class="fix-item">
+      <div class="fix-num">#5</div>
+      <div class="fix-content">
+        <div class="fix-title">Login page — renderowanie i mocki błędów pól formularza</div>
+        <div class="fix-file">src/app/(main)/(customer)/login/page.tsx &amp; page.test.tsx</div>
+        <div class="fix-desc">Zmieniono <code>&#123;state.errors.email&#125;</code> na <code>&#123;state.errors.email[0]&#125;</code> (typ to <code>string[]</code>). Sparowane z mockami: <code>'Error'</code> → <code>['Error']</code> — bez tej zmiany <code>'string'[0]</code> = <code>'s'</code> łamałoby testy.</div>
+      </div>
+    </div>
+
+    <div class="fix-item">
+      <div class="fix-num">#6</div>
+      <div class="fix-content">
+        <div class="fix-title">Register page — renderowanie i mocki błędów pól formularza</div>
+        <div class="fix-file">src/app/(main)/(customer)/register/page.tsx &amp; page.test.tsx</div>
+        <div class="fix-desc">Ta sama klasa problemu co #5: pola <code>accountType</code>, <code>email</code>, <code>password</code> (wszystkie <code>string[]</code>) renderowane bez <code>[0]</code>. Mocki zaktualizowane do tablic. Spójne teraz z <code>onboarding-form.tsx</code> i <code>campaign-form.tsx</code>.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

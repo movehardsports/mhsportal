@@ -47,13 +47,13 @@ describe('Login', () => {
 
   describe('error states', () => {
     it('displays email error from server', () => {
-      mockUseActionState.mockReturnValue([{ errors: { email: 'Email is required.' } }, vi.fn(), false])
+      mockUseActionState.mockReturnValue([{ errors: { email: ['Email is required.'] } }, vi.fn(), false])
       render(<Login />)
       expect(screen.getByText('Email is required.')).toBeInTheDocument()
     })
 
     it('displays password error from server', () => {
-      mockUseActionState.mockReturnValue([{ errors: { password: 'Password is required.' } }, vi.fn(), false])
+      mockUseActionState.mockReturnValue([{ errors: { password: ['Password is required.'] } }, vi.fn(), false])
       render(<Login />)
       expect(screen.getByText('Password is required.')).toBeInTheDocument()
     })

@@ -19,7 +19,7 @@ export const getProfile = cache(async () => {
   const supabase = await getSupabaseClient()
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, account_type, onboarding_completed, created_at, updated_at, first_name, last_name, brand_name')
+    .select('id, account_type, onboarding_completed, created_at, updated_at, first_name, last_name, brand_name, disciplines')
     .eq('id', user.id)
     .single<Profile>()
 
@@ -33,7 +33,7 @@ export const getCampaigns = cache(async () => {
   const supabase = await getSupabaseClient()
   const { data } = await supabase
     .from('campaigns')
-    .select('id, brand_id, title, description, status, created_at, updated_at')
+    .select('id, brand_id, title, description, status, disciplines, created_at, updated_at')
     .eq('brand_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -47,7 +47,7 @@ export const getCampaign = cache(async (id: string) => {
   const supabase = await getSupabaseClient()
   const { data, error } = await supabase
     .from('campaigns')
-    .select('id, brand_id, title, description, status, created_at, updated_at')
+    .select('id, brand_id, title, description, status, disciplines, created_at, updated_at')
     .eq('id', id)
     .eq('brand_id', user.id)
     .single<Campaign>()

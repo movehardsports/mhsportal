@@ -50,7 +50,7 @@ export default function Registration() {
             </div>
             <input type="hidden" name="account-type" value={accountType ?? ''} />
             {state?.errors?.accountType && (
-              <p className="mt-2 text-sm text-red-400">{state.errors.accountType}</p>
+              <p className="mt-2 text-sm text-red-400">{state.errors.accountType[0]}</p>
             )}
           </div>
 
@@ -69,7 +69,7 @@ export default function Registration() {
               />
             </div>
             {state?.errors?.email && (
-              <p className="mt-2 text-sm text-red-400">{state.errors.email}</p>
+              <p className="mt-2 text-sm text-red-400">{state.errors.email[0]}</p>
             )}
           </div>
 
@@ -88,7 +88,7 @@ export default function Registration() {
               />
             </div>
             {state?.errors?.password && (
-              <p className="mt-2 text-sm text-red-400">{state.errors.password}</p>
+              <p className="mt-2 text-sm text-red-400">{state.errors.password[0]}</p>
             )}
           </div>
 
