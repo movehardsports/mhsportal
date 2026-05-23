@@ -4,7 +4,7 @@ import Header from '@/components/header/header'
 
 const navigation = [
   { name: 'My Campaigns', href: '/dashboard/campaigns' },
-  { name: 'My Profile', href: '#' },
+  { name: 'My Profile', href: '/dashboard/profile' },
 ]
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
