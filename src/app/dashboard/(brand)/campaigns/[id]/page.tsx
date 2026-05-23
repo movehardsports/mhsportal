@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getCampaign } from '@/lib/dal'
+import { getCampaign, getProfile } from '@/lib/dal'
 import { DeleteButton } from '../_components/delete-button'
+import { PublishButton } from '../_components/publish-button'
 import { DISCIPLINES } from '@/types/discipline'
 
 export default async function CampaignPage({
@@ -10,7 +11,7 @@ export default async function CampaignPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const campaign = await getCampaign(id)
+  const [campaign, profile] = await Promise.all([getCampaign(id), getProfile()])
 
   if (!campaign) notFound()
 
@@ -30,7 +31,12 @@ export default async function CampaignPage({
 
       <div className="space-y-6">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-2xl font-bold text-white">{campaign.title}</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-white">{campaign.title}</h1>
+            {profile?.brand_name && (
+              <p className="text-sm text-indigo-400 font-medium mt-1">{profile.brand_name}</p>
+            )}
+          </div>
           <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-medium uppercase tracking-wide text-gray-300">
             {campaign.status}
           </span>
@@ -76,6 +82,7 @@ export default async function CampaignPage({
           >
             Edit
           </Link>
+          {campaign.status === 'preview' && <PublishButton id={campaign.id} />}
           <DeleteButton id={campaign.id} />
         </div>
       </div>

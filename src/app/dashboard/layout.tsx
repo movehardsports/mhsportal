@@ -15,7 +15,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <>
-      <Header navigation={navigation} showSignOut />
+      <Header navigation={navigation} showSignOut showHome />
       {children}
     </>
   )

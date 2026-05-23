@@ -20,7 +20,7 @@ const mockCampaign: Campaign = {
   brand_id: 'brand-1',
   title: 'Summer Sprint',
   description: 'A campaign for summer athletes.',
-  status: 'draft',
+  status: 'preview',
   disciplines: ['crossfit', 'triathlon'],
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',

@@ -44,9 +44,9 @@ test.describe('Campaign list', () => {
     await expect(page.getByText('My First Campaign')).toBeVisible()
   })
 
-  test('new campaign has draft status badge', async ({ page }) => {
-    await createCampaign(page, 'Draft Campaign', 'A campaign in draft state.')
-    await expect(page.getByText('draft', { exact: true })).toBeVisible()
+  test('new campaign has preview status badge', async ({ page }) => {
+    await createCampaign(page, 'Preview Campaign', 'A campaign in preview state.')
+    await expect(page.getByText('preview', { exact: true })).toBeVisible()
   })
 })
 
@@ -107,9 +107,18 @@ test.describe('Campaign preview', () => {
     await expect(page.getByText('Triathlon')).toBeVisible()
   })
 
-  test('displays Edit and Delete actions', async ({ page }) => {
+  test('displays Edit, Publish and Delete actions', async ({ page }) => {
     await expect(page.getByRole('link', { name: 'Edit' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Publish' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Delete' })).toBeVisible()
+  })
+
+  test('publishing campaign changes status to active and hides Publish button', async ({ page }) => {
+    await page.getByRole('button', { name: 'Publish' }).click()
+    await page.waitForURL('/dashboard/campaigns')
+    await page.getByRole('link', { name: 'Preview' }).click()
+    await expect(page.getByText('active', { exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Publish' })).not.toBeVisible()
   })
 
   test('Back to Campaigns link navigates to list', async ({ page }) => {

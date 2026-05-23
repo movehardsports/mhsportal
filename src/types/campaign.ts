@@ -1,6 +1,6 @@
 import type { Discipline } from './discipline'
 
-export type CampaignStatus = 'draft' | 'active' | 'closed' | 'archived'
+export type CampaignStatus = 'preview' | 'active' | 'closed' | 'archived'
 
 export type Campaign = {
   id: string
