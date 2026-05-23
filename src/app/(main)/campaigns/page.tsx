@@ -44,13 +44,20 @@ export default async function CampaignsPage() {
                       })}
                     </div>
                   )}
-                  <div className="pt-2">
+                  <div className="flex items-center justify-between gap-4 pt-2">
                     <Link
                       href={`/campaigns/${campaign.id}`}
                       className="inline-block rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400 transition-colors"
                     >
                       See details
                     </Link>
+                    {campaign.application_count > 0 && (
+                      <span className="text-xs text-gray-500">
+                        {campaign.application_count === 1
+                          ? '1 application'
+                          : `${campaign.application_count} applications`}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

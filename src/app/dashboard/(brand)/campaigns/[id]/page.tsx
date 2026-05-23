@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getCampaign, getProfile } from '@/lib/dal'
+import { getCampaign, getProfile, getCampaignApplications } from '@/lib/dal'
 import { DeleteButton } from '../_components/delete-button'
 import { PublishButton } from '../_components/publish-button'
 import { DISCIPLINES } from '@/types/discipline'
@@ -11,7 +11,11 @@ export default async function CampaignPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const [campaign, profile] = await Promise.all([getCampaign(id), getProfile()])
+  const [campaign, profile, applications] = await Promise.all([
+    getCampaign(id),
+    getProfile(),
+    getCampaignApplications(id),
+  ])
 
   if (!campaign) notFound()
 
@@ -85,6 +89,68 @@ export default async function CampaignPage({
           {campaign.status === 'preview' && <PublishButton id={campaign.id} />}
           <DeleteButton id={campaign.id} />
         </div>
+
+        <section className="pt-6 border-t border-white/10">
+          <h2 className="text-lg font-semibold text-white mb-4">
+            Applications
+            {applications.length > 0 && (
+              <span className="ml-2 text-sm font-normal text-gray-400">({applications.length})</span>
+            )}
+          </h2>
+
+          {applications.length === 0 ? (
+            <p className="text-sm text-gray-500">No applications yet.</p>
+          ) : (
+            <ul className="space-y-3">
+              {applications.map((app) => (
+                <li
+                  key={app.id}
+                  className="rounded-lg border border-white/10 bg-white/5 px-5 py-4"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-medium text-white">
+                        {app.first_name} {app.last_name}
+                      </p>
+                      {app.disciplines && app.disciplines.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {app.disciplines.map((disciplineId) => {
+                            const label = DISCIPLINES.find((d) => d.id === disciplineId)?.label ?? disciplineId
+                            return (
+                              <span
+                                key={disciplineId}
+                                className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs text-gray-400"
+                              >
+                                {label}
+                              </span>
+                            )
+                          })}
+                        </div>
+                      )}
+                      {app.message && (
+                        <p className="mt-3 text-sm text-gray-300 whitespace-pre-wrap leading-relaxed border-l-2 border-white/10 pl-3">
+                          {app.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium uppercase tracking-wide ${
+                        app.status === 'accepted'
+                          ? 'bg-green-500/20 text-green-400'
+                          : app.status === 'rejected'
+                          ? 'bg-red-500/20 text-red-400'
+                          : 'bg-white/10 text-gray-300'
+                      }`}>
+                        {app.status}
+                      </span>
+                      <p className="mt-1 text-xs text-gray-500">{formatDate(app.created_at)}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
     </main>
   )

@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getActiveCampaign } from '@/lib/dal'
+import { getActiveCampaign, getApplicationStatus, getProfile } from '@/lib/dal'
 import { DISCIPLINES } from '@/types/discipline'
+import { ApplyButton } from './_components/apply-button'
 
 export default async function CampaignDetailPage({
   params,
@@ -9,11 +10,16 @@ export default async function CampaignDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const campaign = await getActiveCampaign(id)
+  const [campaign, profile, application] = await Promise.all([
+    getActiveCampaign(id),
+    getProfile(),
+    getApplicationStatus(id),
+  ])
 
   if (!campaign) notFound()
 
   const brandName = campaign.brand_name
+  const isAthlete = profile?.account_type === 'athlete'
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -30,10 +36,28 @@ export default async function CampaignDetailPage({
       </div>
 
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-white">{campaign.title}</h1>
-          {brandName && (
-            <p className="text-sm text-indigo-400 font-medium mt-1">{brandName}</p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-white">{campaign.title}</h1>
+            {brandName && (
+              <p className="text-sm text-indigo-400 font-medium mt-1">{brandName}</p>
+            )}
+          </div>
+          {isAthlete && (
+            <div className="flex flex-col items-end gap-2 shrink-0">
+              <ApplyButton
+                campaignId={campaign.id}
+                alreadyApplied={!!application}
+              />
+              {application && (
+                <Link
+                  href="/dashboard/applications"
+                  className="text-xs text-gray-400 hover:text-white transition-colors"
+                >
+                  Manage application →
+                </Link>
+              )}
+            </div>
           )}
         </div>
 
