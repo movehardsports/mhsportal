@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { Profile } from '@/types/profile'
 import type { Campaign } from '@/types/campaign'
 import type { Discipline } from '@/types/discipline'
+import type { ApplicationWithAthlete } from '@/types/application'
 
 export type ActiveCampaign = {
   id: string
@@ -13,6 +14,7 @@ export type ActiveCampaign = {
   description: string
   disciplines: Discipline[] | null
   created_at: string
+  application_count: number
 }
 
 const getSupabaseClient = cache(createClient)
@@ -61,18 +63,22 @@ export const getActiveCampaigns = cache(async () => {
 
   if (!campaigns?.length) return [] as ActiveCampaign[]
 
+  const campaignIds = campaigns.map((c) => c.id)
   const brandIds = [...new Set(campaigns.map((c) => c.brand_id))]
-  const { data: profiles } = await supabase
-    .from('profiles')
-    .select('id, brand_name')
-    .in('id', brandIds)
+
+  const [{ data: profiles }, { data: counts }] = await Promise.all([
+    supabase.from('profiles').select('id, brand_name').in('id', brandIds),
+    supabase.from('campaign_application_counts').select('campaign_id, count').in('campaign_id', campaignIds),
+  ])
 
   const brandMap = new Map((profiles ?? []).map((p) => [p.id, p.brand_name as string | null]))
+  const countMap = new Map((counts ?? []).map((c) => [c.campaign_id as string, Number(c.count)]))
 
   return campaigns.map((c) => ({
     ...c,
     disciplines: c.disciplines as Discipline[] | null,
     brand_name: brandMap.get(c.brand_id) ?? null,
+    application_count: countMap.get(c.id) ?? 0,
   })) as ActiveCampaign[]
 })
 
@@ -102,6 +108,108 @@ export const getActiveCampaign = cache(async (id: string) => {
     disciplines: campaign.disciplines as Discipline[] | null,
     brand_name: (profile?.brand_name as string | null) ?? null,
   } as ActiveCampaign
+})
+
+export type AthleteApplication = {
+  id: string
+  status: string
+  message: string | null
+  created_at: string
+  campaign_id: string
+  campaign_title: string
+  brand_name: string | null
+}
+
+export const getAthleteApplications = cache(async () => {
+  const user = await getUser()
+  if (!user) return []
+
+  const supabase = await getSupabaseClient()
+  const { data: applications } = await supabase
+    .from('campaign_applications')
+    .select('id, campaign_id, status, message, created_at')
+    .eq('athlete_id', user.id)
+    .order('created_at', { ascending: false })
+
+  if (!applications?.length) return [] as AthleteApplication[]
+
+  const campaignIds = applications.map((a) => a.campaign_id)
+  const { data: campaigns } = await supabase
+    .from('campaigns')
+    .select('id, brand_id, title')
+    .in('id', campaignIds)
+
+  if (!campaigns?.length) return [] as AthleteApplication[]
+
+  const brandIds = [...new Set(campaigns.map((c) => c.brand_id))]
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, brand_name')
+    .in('id', brandIds)
+
+  const campaignMap = new Map(campaigns.map((c) => [c.id, c]))
+  const brandMap = new Map((profiles ?? []).map((p) => [p.id, p.brand_name as string | null]))
+
+  return applications.map((app) => {
+    const campaign = campaignMap.get(app.campaign_id)
+    return {
+      id: app.id,
+      status: app.status,
+      message: app.message as string | null,
+      created_at: app.created_at,
+      campaign_id: app.campaign_id,
+      campaign_title: campaign?.title ?? '',
+      brand_name: campaign ? (brandMap.get(campaign.brand_id) ?? null) : null,
+    }
+  }) as AthleteApplication[]
+})
+
+export const getApplicationStatus = cache(async (campaignId: string) => {
+  const user = await getUser()
+  if (!user) return null
+
+  const supabase = await getSupabaseClient()
+  const { data } = await supabase
+    .from('campaign_applications')
+    .select('id, status')
+    .eq('campaign_id', campaignId)
+    .eq('athlete_id', user.id)
+    .single()
+
+  return data ?? null
+})
+
+export const getCampaignApplications = cache(async (campaignId: string) => {
+  const user = await getUser()
+  if (!user) return []
+
+  const supabase = await getSupabaseClient()
+  const { data: applications } = await supabase
+    .from('campaign_applications')
+    .select('id, campaign_id, athlete_id, status, message, created_at')
+    .eq('campaign_id', campaignId)
+    .order('created_at', { ascending: false })
+
+  if (!applications?.length) return [] as ApplicationWithAthlete[]
+
+  const athleteIds = applications.map((a) => a.athlete_id)
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, first_name, last_name, disciplines')
+    .in('id', athleteIds)
+
+  const profileMap = new Map((profiles ?? []).map((p) => [p.id, p]))
+
+  return applications.map((app) => {
+    const profile = profileMap.get(app.athlete_id)
+    return {
+      ...app,
+      first_name: profile?.first_name ?? '',
+      last_name: profile?.last_name ?? '',
+      disciplines: (profile?.disciplines as Discipline[] | null) ?? null,
+      message: app.message as string | null,
+    }
+  }) as ApplicationWithAthlete[]
 })
 
 export const getCampaign = cache(async (id: string) => {
