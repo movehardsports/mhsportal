@@ -9,6 +9,7 @@ export default async function MainLayout({
   const user = await getUser();
 
   const navigation = [
+    { name: 'Campaigns', href: '/campaigns' },
     { name: 'For Athletes', href: '#' },
     { name: 'For Brands', href: '#' },
   ]

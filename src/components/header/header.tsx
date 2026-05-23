@@ -12,9 +12,10 @@ type HeaderProps = {
   navigation: NavItem[]
   user?: User | null
   showSignOut?: boolean
+  showHome?: boolean
 }
 
-export default function Header({ navigation, user, showSignOut }: HeaderProps) {
+export default function Header({ navigation, user, showSignOut, showHome }: HeaderProps) {
   return (
     <Disclosure
       as="nav"
@@ -56,14 +57,22 @@ export default function Header({ navigation, user, showSignOut }: HeaderProps) {
 
           <div className="absolute inset-y-0 right-0 hidden sm:flex items-center gap-4 sm:static sm:inset-auto sm:ml-6">
             {showSignOut ? (
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  className="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wide transition-colors cursor-pointer"
+              <>
+                <Link
+                  href={showHome ? '/' : '/dashboard'}
+                  className="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wide transition-colors"
                 >
-                  SIGN OUT
-                </button>
-              </form>
+                  {showHome ? 'HOME' : 'DASHBOARD'}
+                </Link>
+                <form action={signOut}>
+                  <button
+                    type="submit"
+                    className="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wide transition-colors cursor-pointer"
+                  >
+                    SIGN OUT
+                  </button>
+                </form>
+              </>
             ) : user ? (
               <Link
                 href="/dashboard"
@@ -105,14 +114,22 @@ export default function Header({ navigation, user, showSignOut }: HeaderProps) {
           ))}
           <div className="border-t border-white/10 mt-2 pt-2 space-y-1">
             {showSignOut ? (
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  className="block w-full text-left rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white cursor-pointer"
+              <>
+                <Link
+                  href={showHome ? '/' : '/dashboard'}
+                  className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white"
                 >
-                  SIGN OUT
-                </button>
-              </form>
+                  {showHome ? 'HOME' : 'DASHBOARD'}
+                </Link>
+                <form action={signOut}>
+                  <button
+                    type="submit"
+                    className="block w-full text-left rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white cursor-pointer"
+                  >
+                    SIGN OUT
+                  </button>
+                </form>
+              </>
             ) : user ? (
               <Link
                 href="/dashboard"

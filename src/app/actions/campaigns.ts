@@ -58,6 +58,7 @@ export async function createCampaign(
     title: parsed.data.title,
     description: parsed.data.description,
     disciplines: parsed.data.disciplines,
+    status: 'preview',
   })
 
   if (error) {
@@ -99,6 +100,38 @@ export async function updateCampaign(
   if (error || !data?.length) {
     console.error('[updateCampaign]', error?.message ?? 'no rows updated')
     return { errors: { general: 'Campaign not found or could not be updated.' } }
+  }
+
+  redirect('/dashboard/campaigns')
+}
+
+export type PublishState = { error?: string } | undefined
+
+export async function publishCampaign(
+  _state: PublishState,
+  formData: FormData
+): Promise<PublishState> {
+  const id = formData.get('id')
+  if (typeof id !== 'string' || !id) {
+    return { error: 'Invalid campaign.' }
+  }
+
+  const profile = await getProfile()
+  if (!profile || profile.account_type !== 'brand') {
+    return { error: 'Unauthorized.' }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('campaigns')
+    .update({ status: 'active' })
+    .eq('id', id)
+    .eq('brand_id', profile.id)
+    .eq('status', 'preview')
+
+  if (error) {
+    console.error('[publishCampaign]', error.message)
+    return { error: 'Could not publish campaign. Please try again.' }
   }
 
   redirect('/dashboard/campaigns')

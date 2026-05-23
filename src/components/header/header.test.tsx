@@ -81,9 +81,34 @@ describe('Header', () => {
       expect(signOutButtons[0]).toBeInTheDocument()
     })
 
+    it('renders dashboard link pointing to /dashboard', () => {
+      render(<Header navigation={dashboardNav} showSignOut />)
+      const dashboardLinks = screen.getAllByRole('link', { name: /dashboard/i })
+      expect(dashboardLinks[0]).toHaveAttribute('href', '/dashboard')
+    })
+
     it('does not render sign in link', () => {
       render(<Header navigation={dashboardNav} showSignOut />)
       expect(screen.queryByRole('link', { name: /sign in/i })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('when showSignOut and showHome are true', () => {
+    it('renders HOME link pointing to /', () => {
+      render(<Header navigation={dashboardNav} showSignOut showHome />)
+      const homeLinks = screen.getAllByRole('link', { name: /home/i })
+      expect(homeLinks[0]).toHaveAttribute('href', '/')
+    })
+
+    it('does not render dashboard link', () => {
+      render(<Header navigation={dashboardNav} showSignOut showHome />)
+      expect(screen.queryByRole('link', { name: /dashboard/i })).not.toBeInTheDocument()
+    })
+
+    it('still renders sign out button', () => {
+      render(<Header navigation={dashboardNav} showSignOut showHome />)
+      const signOutButtons = screen.getAllByRole('button', { name: /sign out/i })
+      expect(signOutButtons[0]).toBeInTheDocument()
     })
   })
 })
