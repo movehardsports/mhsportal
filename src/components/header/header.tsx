@@ -1,12 +1,12 @@
 'use client'
 
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { signOut } from '@/app/actions/auth'
 import type { User } from '@supabase/supabase-js'
 
-type NavItem = { name: string; href: string }
+type NavItem = { name: string; href?: string; children?: { name: string; href: string }[] }
 
 type HeaderProps = {
   navigation: NavItem[]
@@ -41,16 +41,39 @@ export default function Header({ navigation, user, showSignOut, showHome }: Head
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-4">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="text-gray-300 hover:bg-white/5 hover:text-white rounded-md px-3 py-2 text-sm font-medium uppercase tracking-wide"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+              <div className="flex space-x-1 items-center">
+                {navigation.map((item) =>
+                  item.children ? (
+                    <Popover key={item.name} className="relative">
+                      <PopoverButton className="flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white focus:outline-none data-open:bg-white/5 data-open:text-white">
+                        {item.name}
+                        <ChevronDownIcon className="size-3.5 transition-transform duration-150 data-open:rotate-180" aria-hidden="true" />
+                      </PopoverButton>
+                      <PopoverPanel
+                        anchor="bottom start"
+                        className="z-10 mt-1 w-40 rounded-lg border border-white/10 bg-gray-900 py-1 shadow-xl"
+                      >
+                        {item.children.map((child) => (
+                          <Link
+                            key={child.name}
+                            href={child.href}
+                            className="block px-4 py-2 text-sm font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </PopoverPanel>
+                    </Popover>
+                  ) : (
+                    <Link
+                      key={item.name}
+                      href={item.href ?? '#'}
+                      className="rounded-md px-3 py-2 text-sm font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white"
+                    >
+                      {item.name}
+                    </Link>
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -102,16 +125,34 @@ export default function Header({ navigation, user, showSignOut, showHome }: Head
 
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 px-2 pt-2 pb-3">
-          {navigation.map((item) => (
-            <DisclosureButton
-              key={item.name}
-              as={Link}
-              href={item.href}
-              className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white"
-            >
-              {item.name}
-            </DisclosureButton>
-          ))}
+          {navigation.map((item) =>
+            item.children ? (
+              <div key={item.name}>
+                <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  {item.name}
+                </p>
+                {item.children.map((child) => (
+                  <DisclosureButton
+                    key={child.name}
+                    as={Link}
+                    href={child.href}
+                    className="block rounded-md px-5 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white"
+                  >
+                    {child.name}
+                  </DisclosureButton>
+                ))}
+              </div>
+            ) : (
+              <DisclosureButton
+                key={item.name}
+                as={Link}
+                href={item.href ?? '#'}
+                className="block rounded-md px-3 py-2 text-base font-medium uppercase tracking-wide text-gray-300 hover:bg-white/5 hover:text-white"
+              >
+                {item.name}
+              </DisclosureButton>
+            )
+          )}
           <div className="border-t border-white/10 mt-2 pt-2 space-y-1">
             {showSignOut ? (
               <>

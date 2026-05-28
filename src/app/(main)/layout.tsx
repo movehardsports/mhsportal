@@ -10,6 +10,13 @@ export default async function MainLayout({
 
   const navigation = [
     { name: 'Campaigns', href: '/campaigns' },
+    {
+      name: 'Explore',
+      children: [
+        { name: 'Athletes', href: '/explore/athletes' },
+        { name: 'Brands', href: '/explore/brands' },
+      ],
+    },
     { name: 'For Athletes', href: '#' },
     { name: 'For Brands', href: '#' },
   ]

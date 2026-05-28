@@ -81,3 +81,9 @@ create policy "Brands can read profiles of athletes who applied to their campaig
       and c.brand_id = auth.uid()
     )
   );
+
+-- Allow reading athlete profiles publicly (needed for /explore/athletes page)
+create policy "Anyone can read athlete profiles"
+  on public.profiles
+  for select
+  using (account_type = 'athlete' and onboarding_completed = true);

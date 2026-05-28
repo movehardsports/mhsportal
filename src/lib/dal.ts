@@ -230,3 +230,74 @@ export const getCampaign = cache(async (id: string) => {
 
   return data ?? null
 })
+
+export type PublicAthlete = {
+  id: string
+  first_name: string
+  last_name: string
+  disciplines: Discipline[] | null
+  created_at: string
+}
+
+export const getPublicAthletes = cache(async () => {
+  const supabase = await getSupabaseClient()
+  const { data } = await supabase
+    .from('profiles')
+    .select('id, first_name, last_name, disciplines, created_at')
+    .eq('account_type', 'athlete')
+    .eq('onboarding_completed', true)
+    .order('created_at', { ascending: false })
+  return (data ?? []) as PublicAthlete[]
+})
+
+export type PublicBrand = {
+  id: string
+  brand_name: string
+  disciplines: Discipline[] | null
+  created_at: string
+}
+
+export const getPublicBrands = cache(async () => {
+  const supabase = await getSupabaseClient()
+  const { data } = await supabase
+    .from('profiles')
+    .select('id, brand_name, disciplines, created_at')
+    .eq('account_type', 'brand')
+    .eq('onboarding_completed', true)
+    .order('created_at', { ascending: false })
+  return (data ?? []) as PublicBrand[]
+})
+
+export const getPublicAthlete = cache(async (id: string) => {
+  const supabase = await getSupabaseClient()
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, first_name, last_name, disciplines, created_at')
+    .eq('id', id)
+    .eq('account_type', 'athlete')
+    .eq('onboarding_completed', true)
+    .single()
+
+  if (error && error.code !== 'PGRST116') {
+    console.error('[getPublicAthlete]', error.message)
+  }
+
+  return data ? (data as PublicAthlete) : null
+})
+
+export const getPublicBrand = cache(async (id: string) => {
+  const supabase = await getSupabaseClient()
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, brand_name, disciplines, created_at')
+    .eq('id', id)
+    .eq('account_type', 'brand')
+    .eq('onboarding_completed', true)
+    .single()
+
+  if (error && error.code !== 'PGRST116') {
+    console.error('[getPublicBrand]', error.message)
+  }
+
+  return data ? (data as PublicBrand) : null
+})
