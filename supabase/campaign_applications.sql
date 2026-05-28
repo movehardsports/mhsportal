@@ -87,3 +87,20 @@ create policy "Anyone can read athlete profiles"
   on public.profiles
   for select
   using (account_type = 'athlete' and onboarding_completed = true);
+
+-- Brands can accept/reject applications to their campaigns
+create policy "Brands can update status of applications to their campaigns"
+  on public.campaign_applications
+  for update
+  using (
+    exists (
+      select 1 from public.campaigns
+      where id = campaign_id and brand_id = auth.uid()
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.campaigns
+      where id = campaign_id and brand_id = auth.uid()
+    )
+  );

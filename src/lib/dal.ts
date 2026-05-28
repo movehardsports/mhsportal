@@ -53,15 +53,27 @@ export const getCampaigns = cache(async () => {
   return (data ?? []) as Campaign[]
 })
 
-export const getActiveCampaigns = cache(async () => {
+const LOAD_LIMIT = 10
+
+export const getActiveCampaigns = cache(async (filterDisciplines?: Discipline[], offset = 0) => {
   const supabase = await getSupabaseClient()
-  const { data: campaigns } = await supabase
+
+  let query = supabase
     .from('campaigns')
     .select('id, brand_id, title, description, disciplines, created_at')
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
-  if (!campaigns?.length) return [] as ActiveCampaign[]
+  if (filterDisciplines && filterDisciplines.length > 0) {
+    query = query.overlaps('disciplines', filterDisciplines)
+  }
+
+  const { data: raw } = await query.range(offset, offset + LOAD_LIMIT)
+
+  const hasMore = (raw?.length ?? 0) > LOAD_LIMIT
+  const campaigns = (raw ?? []).slice(0, LOAD_LIMIT)
+
+  if (!campaigns.length) return { data: [] as ActiveCampaign[], hasMore: false }
 
   const campaignIds = campaigns.map((c) => c.id)
   const brandIds = [...new Set(campaigns.map((c) => c.brand_id))]
@@ -74,12 +86,15 @@ export const getActiveCampaigns = cache(async () => {
   const brandMap = new Map((profiles ?? []).map((p) => [p.id, p.brand_name as string | null]))
   const countMap = new Map((counts ?? []).map((c) => [c.campaign_id as string, Number(c.count)]))
 
-  return campaigns.map((c) => ({
-    ...c,
-    disciplines: c.disciplines as Discipline[] | null,
-    brand_name: brandMap.get(c.brand_id) ?? null,
-    application_count: countMap.get(c.id) ?? 0,
-  })) as ActiveCampaign[]
+  return {
+    data: campaigns.map((c) => ({
+      ...c,
+      disciplines: c.disciplines as Discipline[] | null,
+      brand_name: brandMap.get(c.brand_id) ?? null,
+      application_count: countMap.get(c.id) ?? 0,
+    })) as ActiveCampaign[],
+    hasMore,
+  }
 })
 
 export const getActiveCampaign = cache(async (id: string) => {
@@ -239,15 +254,23 @@ export type PublicAthlete = {
   created_at: string
 }
 
-export const getPublicAthletes = cache(async () => {
+export const getPublicAthletes = cache(async (filterDisciplines?: Discipline[], offset = 0) => {
   const supabase = await getSupabaseClient()
-  const { data } = await supabase
+
+  let query = supabase
     .from('profiles')
     .select('id, first_name, last_name, disciplines, created_at')
     .eq('account_type', 'athlete')
     .eq('onboarding_completed', true)
     .order('created_at', { ascending: false })
-  return (data ?? []) as PublicAthlete[]
+
+  if (filterDisciplines && filterDisciplines.length > 0) {
+    query = query.overlaps('disciplines', filterDisciplines)
+  }
+
+  const { data: raw } = await query.range(offset, offset + LOAD_LIMIT)
+  const hasMore = (raw?.length ?? 0) > LOAD_LIMIT
+  return { data: ((raw ?? []).slice(0, LOAD_LIMIT)) as PublicAthlete[], hasMore }
 })
 
 export type PublicBrand = {
@@ -257,15 +280,23 @@ export type PublicBrand = {
   created_at: string
 }
 
-export const getPublicBrands = cache(async () => {
+export const getPublicBrands = cache(async (filterDisciplines?: Discipline[], offset = 0) => {
   const supabase = await getSupabaseClient()
-  const { data } = await supabase
+
+  let query = supabase
     .from('profiles')
     .select('id, brand_name, disciplines, created_at')
     .eq('account_type', 'brand')
     .eq('onboarding_completed', true)
     .order('created_at', { ascending: false })
-  return (data ?? []) as PublicBrand[]
+
+  if (filterDisciplines && filterDisciplines.length > 0) {
+    query = query.overlaps('disciplines', filterDisciplines)
+  }
+
+  const { data: raw } = await query.range(offset, offset + LOAD_LIMIT)
+  const hasMore = (raw?.length ?? 0) > LOAD_LIMIT
+  return { data: ((raw ?? []).slice(0, LOAD_LIMIT)) as PublicBrand[], hasMore }
 })
 
 export const getPublicAthlete = cache(async (id: string) => {
