@@ -42,6 +42,37 @@ export async function applyToCampaign(
   return { success: true }
 }
 
+export type ReviewApplicationState = { error?: string } | undefined
+
+export async function reviewApplication(
+  _state: ReviewApplicationState,
+  formData: FormData
+): Promise<ReviewApplicationState> {
+  const id = formData.get('id')
+  const status = formData.get('status')
+  const campaignId = formData.get('campaign_id')
+
+  if (typeof id !== 'string' || !id) return { error: 'Invalid application.' }
+  if (status !== 'accepted' && status !== 'rejected') return { error: 'Invalid status.' }
+  if (typeof campaignId !== 'string' || !campaignId) return { error: 'Invalid campaign.' }
+
+  const profile = await getProfile()
+  if (!profile || profile.account_type !== 'brand') return { error: 'Unauthorized.' }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('campaign_applications')
+    .update({ status })
+    .eq('id', id)
+
+  if (error) {
+    console.error('[reviewApplication]', error.message)
+    return { error: 'Could not update application. Please try again.' }
+  }
+
+  revalidatePath(`/dashboard/campaigns/${campaignId}`)
+}
+
 export type ManageApplicationState = { error?: string } | undefined
 
 export async function updateApplication(

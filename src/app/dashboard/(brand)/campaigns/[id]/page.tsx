@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getCampaign, getProfile, getCampaignApplications } from '@/lib/dal'
 import { DeleteButton } from '../_components/delete-button'
 import { PublishButton } from '../_components/publish-button'
+import { ReviewButtons } from './_components/review-buttons'
 import { DISCIPLINES } from '@/types/discipline'
 
 export default async function CampaignPage({
@@ -144,6 +145,9 @@ export default async function CampaignPage({
                         {app.status}
                       </span>
                       <p className="mt-1 text-xs text-gray-500">{formatDate(app.created_at)}</p>
+                      {app.status === 'pending' && (
+                        <ReviewButtons applicationId={app.id} campaignId={campaign.id} />
+                      )}
                     </div>
                   </div>
                 </li>
