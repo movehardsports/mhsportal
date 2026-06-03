@@ -62,7 +62,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-zinc-950/90 backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-zinc-950/90 backdrop-blur md:static md:bg-zinc-950 md:backdrop-filter-none">
       <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6">
 
         <button
