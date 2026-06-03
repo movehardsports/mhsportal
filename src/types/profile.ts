@@ -7,6 +7,8 @@ type BaseProfile = {
   created_at: string
   updated_at: string
   disciplines: Discipline[] | null
+  bio: string | null
+  location: string | null
 }
 
 export type AthleteProfile = BaseProfile & {
@@ -21,6 +23,8 @@ export type BrandProfile = BaseProfile & {
   brand_name: string
   first_name: null
   last_name: null
+  website: string | null
+  contact_email: string | null
 }
 
 export type Profile = AthleteProfile | BrandProfile

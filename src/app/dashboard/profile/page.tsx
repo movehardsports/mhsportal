@@ -34,6 +34,35 @@ export default async function ProfilePage() {
           </div>
         )}
 
+        {profile.bio && (
+          <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">{profile.bio}</p>
+        )}
+
+        <dl className="text-sm space-y-3">
+          {profile.location && (
+            <div>
+              <dt className="text-gray-500">Location</dt>
+              <dd className="mt-0.5 text-gray-300">{profile.location}</dd>
+            </div>
+          )}
+          {profile.account_type === 'brand' && profile.website && (
+            <div>
+              <dt className="text-gray-500">Website</dt>
+              <dd className="mt-0.5">
+                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+                  {profile.website}
+                </a>
+              </dd>
+            </div>
+          )}
+          {profile.account_type === 'brand' && profile.contact_email && (
+            <div>
+              <dt className="text-gray-500">Contact</dt>
+              <dd className="mt-0.5 text-gray-300">{profile.contact_email}</dd>
+            </div>
+          )}
+        </dl>
+
         <div className="pt-4 border-t border-white/10">
           <Link
             href="/dashboard/profile/edit"

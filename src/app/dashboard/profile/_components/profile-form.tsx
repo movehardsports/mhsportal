@@ -80,6 +80,102 @@ export function ProfileForm({ profile }: Props) {
         error={state?.errors?.disciplines?.[0]}
       />
 
+      <div>
+        <label htmlFor="bio" className="block text-sm/6 font-medium text-gray-100">
+          Bio <span className="text-gray-500 font-normal">(optional)</span>
+        </label>
+        <div className="mt-2">
+          <textarea
+            id="bio"
+            name="bio"
+            rows={4}
+            maxLength={500}
+            defaultValue={profile.bio ?? ''}
+            aria-invalid={!!state?.errors?.bio}
+            aria-describedby={state?.errors?.bio ? 'bio-error' : undefined}
+            className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 resize-none"
+          />
+        </div>
+        {state?.errors?.bio && (
+          <p id="bio-error" aria-live="polite" className="mt-2 text-sm text-red-400">
+            {state.errors.bio[0]}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="location" className="block text-sm/6 font-medium text-gray-100">
+          Location <span className="text-gray-500 font-normal">(optional)</span>
+        </label>
+        <div className="mt-2">
+          <input
+            id="location"
+            name="location"
+            type="text"
+            maxLength={100}
+            defaultValue={profile.location ?? ''}
+            aria-invalid={!!state?.errors?.location}
+            aria-describedby={state?.errors?.location ? 'location-error' : undefined}
+            className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+          />
+        </div>
+        {state?.errors?.location && (
+          <p id="location-error" aria-live="polite" className="mt-2 text-sm text-red-400">
+            {state.errors.location[0]}
+          </p>
+        )}
+      </div>
+
+      {profile.account_type === 'brand' && (
+        <>
+          <div>
+            <label htmlFor="website" className="block text-sm/6 font-medium text-gray-100">
+              Website <span className="text-gray-500 font-normal">(optional)</span>
+            </label>
+            <div className="mt-2">
+              <input
+                id="website"
+                name="website"
+                type="text"
+                maxLength={200}
+                defaultValue={profile.website ?? ''}
+                aria-invalid={!!state?.errors?.website}
+                aria-describedby={state?.errors?.website ? 'website-error' : undefined}
+                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+            {state?.errors?.website && (
+              <p id="website-error" aria-live="polite" className="mt-2 text-sm text-red-400">
+                {state.errors.website[0]}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="contact_email" className="block text-sm/6 font-medium text-gray-100">
+              Contact email <span className="text-gray-500 font-normal">(optional)</span>
+            </label>
+            <div className="mt-2">
+              <input
+                id="contact_email"
+                name="contact_email"
+                type="email"
+                maxLength={200}
+                defaultValue={profile.contact_email ?? ''}
+                aria-invalid={!!state?.errors?.contact_email}
+                aria-describedby={state?.errors?.contact_email ? 'contact-email-error' : undefined}
+                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+              />
+            </div>
+            {state?.errors?.contact_email && (
+              <p id="contact-email-error" aria-live="polite" className="mt-2 text-sm text-red-400">
+                {state.errors.contact_email[0]}
+              </p>
+            )}
+          </div>
+        </>
+      )}
+
       {state?.errors?.general && (
         <p role="alert" className="text-sm text-red-400">
           {state.errors.general}

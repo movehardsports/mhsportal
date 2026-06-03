@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getActiveCampaign, getApplicationStatus, getProfile } from '@/lib/dal'
 import { DISCIPLINES } from '@/types/discipline'
+import { CAMPAIGN_TYPES } from '@/types/campaign-type'
 import { ApplyButton } from './_components/apply-button'
 
 export default async function CampaignDetailPage({
@@ -83,9 +84,39 @@ export default async function CampaignDetailPage({
           </div>
         )}
 
-        <dl className="text-sm">
-          <dt className="text-gray-500">Published</dt>
-          <dd className="mt-1 text-gray-300">{formatDate(campaign.created_at)}</dd>
+        <dl className="text-sm space-y-3">
+          {campaign.campaign_type && (
+            <div>
+              <dt className="text-gray-500">Type</dt>
+              <dd className="mt-0.5">
+                <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-medium text-gray-300">
+                  {CAMPAIGN_TYPES.find((t) => t.id === campaign.campaign_type)?.label ?? campaign.campaign_type}
+                </span>
+              </dd>
+            </div>
+          )}
+          {campaign.budget && (
+            <div>
+              <dt className="text-gray-500">Budget</dt>
+              <dd className="mt-0.5 text-gray-300">{campaign.budget}</dd>
+            </div>
+          )}
+          {campaign.deadline && (
+            <div>
+              <dt className="text-gray-500">Apply by</dt>
+              <dd className="mt-0.5 text-gray-300">{formatDate(campaign.deadline)}</dd>
+            </div>
+          )}
+          {campaign.location && (
+            <div>
+              <dt className="text-gray-500">Location</dt>
+              <dd className="mt-0.5 text-gray-300">{campaign.location}</dd>
+            </div>
+          )}
+          <div>
+            <dt className="text-gray-500">Published</dt>
+            <dd className="mt-0.5 text-gray-300">{formatDate(campaign.created_at)}</dd>
+          </div>
         </dl>
       </div>
     </main>

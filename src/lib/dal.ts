@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { Profile } from '@/types/profile'
 import type { Campaign } from '@/types/campaign'
 import type { Discipline } from '@/types/discipline'
+import type { CampaignType } from '@/types/campaign-type'
 import type { ApplicationWithAthlete } from '@/types/application'
 
 export type ActiveCampaign = {
@@ -13,6 +14,10 @@ export type ActiveCampaign = {
   title: string
   description: string
   disciplines: Discipline[] | null
+  campaign_type: CampaignType | null
+  budget: string | null
+  deadline: string | null
+  location: string | null
   created_at: string
   application_count: number
 }
@@ -32,7 +37,7 @@ export const getProfile = cache(async () => {
   const supabase = await getSupabaseClient()
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, account_type, onboarding_completed, created_at, updated_at, first_name, last_name, brand_name, disciplines')
+    .select('id, account_type, onboarding_completed, created_at, updated_at, first_name, last_name, brand_name, disciplines, bio, location, website, contact_email')
     .eq('id', user.id)
     .single<Profile>()
 
@@ -46,7 +51,7 @@ export const getCampaigns = cache(async () => {
   const supabase = await getSupabaseClient()
   const { data } = await supabase
     .from('campaigns')
-    .select('id, brand_id, title, description, status, disciplines, created_at, updated_at')
+    .select('id, brand_id, title, description, status, disciplines, campaign_type, budget, deadline, location, created_at, updated_at')
     .eq('brand_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -60,7 +65,7 @@ export const getActiveCampaigns = cache(async (filterDisciplines?: Discipline[],
 
   let query = supabase
     .from('campaigns')
-    .select('id, brand_id, title, description, disciplines, created_at')
+    .select('id, brand_id, title, description, disciplines, campaign_type, budget, deadline, location, created_at')
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
@@ -90,6 +95,7 @@ export const getActiveCampaigns = cache(async (filterDisciplines?: Discipline[],
     data: campaigns.map((c) => ({
       ...c,
       disciplines: c.disciplines as Discipline[] | null,
+      campaign_type: (c.campaign_type as CampaignType | null) ?? null,
       brand_name: brandMap.get(c.brand_id) ?? null,
       application_count: countMap.get(c.id) ?? 0,
     })) as ActiveCampaign[],
@@ -101,7 +107,7 @@ export const getActiveCampaign = cache(async (id: string) => {
   const supabase = await getSupabaseClient()
   const { data: campaign, error } = await supabase
     .from('campaigns')
-    .select('id, brand_id, title, description, disciplines, created_at')
+    .select('id, brand_id, title, description, disciplines, campaign_type, budget, deadline, location, created_at')
     .eq('id', id)
     .eq('status', 'active')
     .single()
@@ -121,6 +127,7 @@ export const getActiveCampaign = cache(async (id: string) => {
   return {
     ...campaign,
     disciplines: campaign.disciplines as Discipline[] | null,
+    campaign_type: (campaign.campaign_type as CampaignType | null) ?? null,
     brand_name: (profile?.brand_name as string | null) ?? null,
   } as ActiveCampaign
 })
@@ -234,7 +241,7 @@ export const getCampaign = cache(async (id: string) => {
   const supabase = await getSupabaseClient()
   const { data, error } = await supabase
     .from('campaigns')
-    .select('id, brand_id, title, description, status, disciplines, created_at, updated_at')
+    .select('id, brand_id, title, description, status, disciplines, campaign_type, budget, deadline, location, created_at, updated_at')
     .eq('id', id)
     .eq('brand_id', user.id)
     .single<Campaign>()
@@ -251,6 +258,8 @@ export type PublicAthlete = {
   first_name: string
   last_name: string
   disciplines: Discipline[] | null
+  bio: string | null
+  location: string | null
   created_at: string
 }
 
@@ -259,7 +268,7 @@ export const getPublicAthletes = cache(async (filterDisciplines?: Discipline[], 
 
   let query = supabase
     .from('profiles')
-    .select('id, first_name, last_name, disciplines, created_at')
+    .select('id, first_name, last_name, disciplines, bio, location, created_at')
     .eq('account_type', 'athlete')
     .eq('onboarding_completed', true)
     .order('created_at', { ascending: false })
@@ -277,6 +286,10 @@ export type PublicBrand = {
   id: string
   brand_name: string
   disciplines: Discipline[] | null
+  bio: string | null
+  location: string | null
+  website: string | null
+  contact_email: string | null
   created_at: string
 }
 
@@ -285,7 +298,7 @@ export const getPublicBrands = cache(async (filterDisciplines?: Discipline[], of
 
   let query = supabase
     .from('profiles')
-    .select('id, brand_name, disciplines, created_at')
+    .select('id, brand_name, disciplines, bio, location, website, contact_email, created_at')
     .eq('account_type', 'brand')
     .eq('onboarding_completed', true)
     .order('created_at', { ascending: false })
@@ -303,7 +316,7 @@ export const getPublicAthlete = cache(async (id: string) => {
   const supabase = await getSupabaseClient()
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, first_name, last_name, disciplines, created_at')
+    .select('id, first_name, last_name, disciplines, bio, location, created_at')
     .eq('id', id)
     .eq('account_type', 'athlete')
     .eq('onboarding_completed', true)
@@ -320,7 +333,7 @@ export const getPublicBrand = cache(async (id: string) => {
   const supabase = await getSupabaseClient()
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, brand_name, disciplines, created_at')
+    .select('id, brand_name, disciplines, bio, location, website, contact_email, created_at')
     .eq('id', id)
     .eq('account_type', 'brand')
     .eq('onboarding_completed', true)

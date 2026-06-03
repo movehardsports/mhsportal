@@ -46,9 +46,37 @@ export default async function BrandProfilePage({
           </div>
         )}
 
-        <dl className="text-sm">
-          <dt className="text-gray-500">Member since</dt>
-          <dd className="mt-1 text-gray-300">{formatDate(brand.created_at)}</dd>
+        {brand.bio && (
+          <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">{brand.bio}</p>
+        )}
+
+        <dl className="text-sm space-y-3">
+          {brand.location && (
+            <div>
+              <dt className="text-gray-500">Location</dt>
+              <dd className="mt-0.5 text-gray-300">{brand.location}</dd>
+            </div>
+          )}
+          {brand.website && (
+            <div>
+              <dt className="text-gray-500">Website</dt>
+              <dd className="mt-0.5">
+                <a href={brand.website} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+                  {brand.website}
+                </a>
+              </dd>
+            </div>
+          )}
+          {brand.contact_email && (
+            <div>
+              <dt className="text-gray-500">Contact</dt>
+              <dd className="mt-0.5 text-gray-300">{brand.contact_email}</dd>
+            </div>
+          )}
+          <div>
+            <dt className="text-gray-500">Member since</dt>
+            <dd className="mt-0.5 text-gray-300">{formatDate(brand.created_at)}</dd>
+          </div>
         </dl>
       </div>
     </main>

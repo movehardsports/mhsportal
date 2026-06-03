@@ -22,6 +22,10 @@ const mockCampaign: Campaign = {
   description: 'A campaign for summer athletes.',
   status: 'preview',
   disciplines: ['crossfit', 'triathlon'],
+  campaign_type: null,
+  budget: null,
+  deadline: null,
+  location: null,
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
 }

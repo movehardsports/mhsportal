@@ -3,6 +3,7 @@
 import { useActionState } from 'react'
 import { createCampaign, updateCampaign } from '@/app/actions/campaigns'
 import { DisciplinePicker } from '@/components/discipline-picker/discipline-picker'
+import { CAMPAIGN_TYPES } from '@/types/campaign-type'
 import type { Campaign } from '@/types/campaign'
 import type { CampaignFormState } from '@/app/actions/campaigns'
 
@@ -71,6 +72,96 @@ export function CampaignForm({ campaign }: Props) {
         defaultValue={campaign?.disciplines ?? []}
         error={state?.errors?.disciplines?.[0]}
       />
+
+      <div>
+        <label htmlFor="campaign_type" className="block text-sm/6 font-medium text-gray-100">
+          Campaign type <span className="text-gray-500 font-normal">(optional)</span>
+        </label>
+        <div className="mt-2">
+          <select
+            id="campaign_type"
+            name="campaign_type"
+            defaultValue={campaign?.campaign_type ?? ''}
+            className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+          >
+            <option value="">— Select type —</option>
+            {CAMPAIGN_TYPES.map((t) => (
+              <option key={t.id} value={t.id}>{t.label}</option>
+            ))}
+          </select>
+        </div>
+        {state?.errors?.campaign_type && (
+          <p aria-live="polite" className="mt-2 text-sm text-red-400">
+            {state.errors.campaign_type[0]}
+          </p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="budget" className="block text-sm/6 font-medium text-gray-100">
+            Budget <span className="text-gray-500 font-normal">(optional)</span>
+          </label>
+          <div className="mt-2">
+            <input
+              id="budget"
+              name="budget"
+              type="text"
+              maxLength={100}
+              placeholder="e.g. 1000 PLN, negotiable"
+              defaultValue={campaign?.budget ?? ''}
+              className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+            />
+          </div>
+          {state?.errors?.budget && (
+            <p aria-live="polite" className="mt-2 text-sm text-red-400">
+              {state.errors.budget[0]}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="deadline" className="block text-sm/6 font-medium text-gray-100">
+            Application deadline <span className="text-gray-500 font-normal">(optional)</span>
+          </label>
+          <div className="mt-2">
+            <input
+              id="deadline"
+              name="deadline"
+              type="date"
+              defaultValue={campaign?.deadline ?? ''}
+              className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+            />
+          </div>
+          {state?.errors?.deadline && (
+            <p aria-live="polite" className="mt-2 text-sm text-red-400">
+              {state.errors.deadline[0]}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="location" className="block text-sm/6 font-medium text-gray-100">
+          Location <span className="text-gray-500 font-normal">(optional)</span>
+        </label>
+        <div className="mt-2">
+          <input
+            id="location"
+            name="location"
+            type="text"
+            maxLength={100}
+            placeholder="e.g. Warsaw, Remote"
+            defaultValue={campaign?.location ?? ''}
+            className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+          />
+        </div>
+        {state?.errors?.location && (
+          <p aria-live="polite" className="mt-2 text-sm text-red-400">
+            {state.errors.location[0]}
+          </p>
+        )}
+      </div>
 
       {state?.errors?.general && (
         <p role="alert" className="text-sm text-red-400">

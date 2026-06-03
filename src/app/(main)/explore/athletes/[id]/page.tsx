@@ -48,9 +48,21 @@ export default async function AthleteProfilePage({
           </div>
         )}
 
-        <dl className="text-sm">
-          <dt className="text-gray-500">Member since</dt>
-          <dd className="mt-1 text-gray-300">{formatDate(athlete.created_at)}</dd>
+        {athlete.bio && (
+          <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">{athlete.bio}</p>
+        )}
+
+        <dl className="text-sm space-y-3">
+          {athlete.location && (
+            <div>
+              <dt className="text-gray-500">Location</dt>
+              <dd className="mt-0.5 text-gray-300">{athlete.location}</dd>
+            </div>
+          )}
+          <div>
+            <dt className="text-gray-500">Member since</dt>
+            <dd className="mt-0.5 text-gray-300">{formatDate(athlete.created_at)}</dd>
+          </div>
         </dl>
       </div>
     </main>

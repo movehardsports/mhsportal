@@ -21,12 +21,18 @@ const AthleteSchema = z.object({
   disciplines: z
     .array(z.enum(DISCIPLINE_IDS))
     .min(1, { error: 'Select at least one discipline.' }),
+  bio: z.string().max(500, { error: 'Bio must be at most 500 characters.' }).trim().optional(),
+  location: z.string().max(100, { error: 'Location must be at most 100 characters.' }).trim().optional(),
 })
 
 const BrandSchema = z.object({
   disciplines: z
     .array(z.enum(DISCIPLINE_IDS))
     .min(1, { error: 'Select at least one discipline.' }),
+  bio: z.string().max(500, { error: 'Bio must be at most 500 characters.' }).trim().optional(),
+  location: z.string().max(100, { error: 'Location must be at most 100 characters.' }).trim().optional(),
+  website: z.string().max(200, { error: 'Website must be at most 200 characters.' }).trim().optional(),
+  contact_email: z.string().email({ error: 'Enter a valid email address.' }).trim().optional().or(z.literal('')),
 })
 
 export type ProfileFormState = {
@@ -34,6 +40,10 @@ export type ProfileFormState = {
     first_name?: string[]
     last_name?: string[]
     disciplines?: string[]
+    bio?: string[]
+    location?: string[]
+    website?: string[]
+    contact_email?: string[]
     general?: string
   }
 } | undefined
@@ -56,6 +66,8 @@ export async function updateProfile(
       first_name: formData.get('first_name'),
       last_name: formData.get('last_name'),
       disciplines,
+      bio: formData.get('bio') || undefined,
+      location: formData.get('location') || undefined,
     })
 
     if (!parsed.success) {
@@ -69,6 +81,8 @@ export async function updateProfile(
         first_name: parsed.data.first_name,
         last_name: parsed.data.last_name,
         disciplines: parsed.data.disciplines,
+        bio: parsed.data.bio ?? null,
+        location: parsed.data.location ?? null,
       })
       .eq('id', profile.id)
 
@@ -77,7 +91,13 @@ export async function updateProfile(
       return { errors: { general: 'Could not update profile. Please try again.' } }
     }
   } else {
-    const parsed = BrandSchema.safeParse({ disciplines })
+    const parsed = BrandSchema.safeParse({
+      disciplines,
+      bio: formData.get('bio') || undefined,
+      location: formData.get('location') || undefined,
+      website: formData.get('website') || undefined,
+      contact_email: formData.get('contact_email') || undefined,
+    })
 
     if (!parsed.success) {
       return { errors: z.flattenError(parsed.error).fieldErrors }
@@ -86,7 +106,13 @@ export async function updateProfile(
     const supabase = await createClient()
     const { error } = await supabase
       .from('profiles')
-      .update({ disciplines: parsed.data.disciplines })
+      .update({
+        disciplines: parsed.data.disciplines,
+        bio: parsed.data.bio ?? null,
+        location: parsed.data.location ?? null,
+        website: parsed.data.website ?? null,
+        contact_email: parsed.data.contact_email || null,
+      })
       .eq('id', profile.id)
 
     if (error) {

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/dal'
 import { z } from 'zod'
 import { DISCIPLINE_IDS } from '@/types/discipline'
+import { CAMPAIGN_TYPE_IDS } from '@/types/campaign-type'
 
 const CampaignSchema = z.object({
   title: z
@@ -20,6 +21,10 @@ const CampaignSchema = z.object({
   disciplines: z
     .array(z.enum(DISCIPLINE_IDS))
     .min(1, { error: 'Select at least one discipline.' }),
+  campaign_type: z.enum(CAMPAIGN_TYPE_IDS).optional(),
+  budget: z.string().max(100, { error: 'Budget must be at most 100 characters.' }).trim().optional(),
+  deadline: z.string().optional(),
+  location: z.string().max(100, { error: 'Location must be at most 100 characters.' }).trim().optional(),
 })
 
 export type CampaignFormState = {
@@ -27,6 +32,10 @@ export type CampaignFormState = {
     title?: string[]
     description?: string[]
     disciplines?: string[]
+    campaign_type?: string[]
+    budget?: string[]
+    deadline?: string[]
+    location?: string[]
     general?: string
   }
 } | undefined
@@ -41,6 +50,10 @@ export async function createCampaign(
     title: formData.get('title'),
     description: formData.get('description'),
     disciplines: formData.getAll('disciplines').filter((v): v is string => typeof v === 'string'),
+    campaign_type: formData.get('campaign_type') || undefined,
+    budget: formData.get('budget') || undefined,
+    deadline: formData.get('deadline') || undefined,
+    location: formData.get('location') || undefined,
   })
 
   if (!parsed.success) {
@@ -58,6 +71,10 @@ export async function createCampaign(
     title: parsed.data.title,
     description: parsed.data.description,
     disciplines: parsed.data.disciplines,
+    campaign_type: parsed.data.campaign_type ?? null,
+    budget: parsed.data.budget ?? null,
+    deadline: parsed.data.deadline ?? null,
+    location: parsed.data.location ?? null,
     status: 'preview',
   })
 
@@ -78,6 +95,10 @@ export async function updateCampaign(
     title: formData.get('title'),
     description: formData.get('description'),
     disciplines: formData.getAll('disciplines').filter((v): v is string => typeof v === 'string'),
+    campaign_type: formData.get('campaign_type') || undefined,
+    budget: formData.get('budget') || undefined,
+    deadline: formData.get('deadline') || undefined,
+    location: formData.get('location') || undefined,
   })
 
   if (!parsed.success) {
@@ -92,7 +113,15 @@ export async function updateCampaign(
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('campaigns')
-    .update({ title: parsed.data.title, description: parsed.data.description, disciplines: parsed.data.disciplines })
+    .update({
+      title: parsed.data.title,
+      description: parsed.data.description,
+      disciplines: parsed.data.disciplines,
+      campaign_type: parsed.data.campaign_type ?? null,
+      budget: parsed.data.budget ?? null,
+      deadline: parsed.data.deadline ?? null,
+      location: parsed.data.location ?? null,
+    })
     .eq('id', id)
     .eq('brand_id', profile.id)
     .select('id')

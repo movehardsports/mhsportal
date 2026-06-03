@@ -1,3 +1,4 @@
+import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import { getUser } from "@/lib/dal";
 
@@ -24,7 +25,8 @@ export default async function MainLayout({
   return (
     <>
       <Header navigation={navigation} user={user} showSignOut={!!user} />
-      {children}
+      <main className="flex-1">{children}</main>
+      <Footer />
     </>
   );
 }
