@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
-@theme inline {
+@theme {
+  --radius-md: 0.75rem;
   --font-sans: var(--font-dm-sans);
 }
