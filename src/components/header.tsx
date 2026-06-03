@@ -97,7 +97,7 @@ export function Header() {
                   type="button"
                   aria-haspopup="true"
                   aria-expanded={openDropdown === item.label}
-                  className="flex items-center gap-1 text-sm text-zinc-400 transition-colors hover:text-zinc-100"
+                  className="flex items-center gap-1 text-sm text-zinc-400 transition-colors hover:text-zinc-100 cursor-pointer"
                   onKeyDown={(e) => handleDropdownKeyDown(e, item.label)}
                 >
                   {item.label}
