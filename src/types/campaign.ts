@@ -14,7 +14,7 @@ export type Campaign = {
   location: string
   start_date: string
   end_date: string | null
-  budget: number
+  budget: number | 'negotiable'
   athlete_gender: Gender | null
   status: CampaignStatus
   created_at: string
