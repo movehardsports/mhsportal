@@ -62,7 +62,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-zinc-950/90 backdrop-blur md:static md:bg-zinc-950 md:backdrop-filter-none">
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl md:static md:bg-zinc-950 md:backdrop-filter-none">
       <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6">
 
         <button
@@ -106,12 +106,12 @@ export function Header() {
 
                 {openDropdown === item.label && (
                   <div className="absolute left-0 top-full pt-3">
-                    <div className="grid grid-cols-2 gap-1 rounded-xl border border-zinc-800 bg-zinc-900 p-2 shadow-xl shadow-black/40 w-96">
+                    <div className="grid grid-cols-2 gap-1 rounded-md border border-zinc-800/60 bg-zinc-900/95 p-2 shadow-2xl shadow-black/60 backdrop-blur w-96">
                       {item.children.map(({ label, href, description }) => (
                         <Link
                           key={href}
                           href={href}
-                          className="flex flex-col gap-1 rounded-lg p-4 transition-colors hover:bg-zinc-800/60"
+                          className="flex flex-col gap-1 rounded-md p-4 transition-colors hover:bg-zinc-800/60"
                         >
                           <span className="text-sm font-medium text-zinc-100">{label}</span>
                           <span className="text-xs text-zinc-500 leading-relaxed">{description}</span>
@@ -130,10 +130,10 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-2 ml-auto">
-          <Link href="/sign-in" className="rounded-full px-4 py-1.5 text-sm text-zinc-300 transition-colors hover:text-zinc-100">
+          <Link href="/sign-in" className="rounded-md px-4 py-1.5 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100">
             SIGN IN
           </Link>
-          <Link href="/join" className="rounded-full bg-zinc-100 px-4 py-1.5 text-sm font-medium text-zinc-950 transition-colors hover:bg-white">
+          <Link href="/join" className="rounded-md bg-zinc-100 px-4 py-1.5 text-sm font-semibold text-zinc-950 transition-all hover:bg-white hover:scale-[1.02]">
             JOIN
           </Link>
         </div>
@@ -150,7 +150,7 @@ export function Header() {
                 <div key={item.label}>
                   <button
                     type="button"
-                    className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-800/50 hover:text-zinc-100"
+                    className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-800/50 hover:text-zinc-100"
                     onClick={() => setOpenDropdown((o) => o === item.label ? null : item.label)}
                   >
                     {item.label}
@@ -163,7 +163,7 @@ export function Header() {
                           key={href}
                           href={href}
                           onClick={closeMenu}
-                          className="rounded-lg px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-800/50 hover:text-zinc-100"
+                          className="rounded-md px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-800/50 hover:text-zinc-100"
                         >
                           {label}
                         </Link>
@@ -172,16 +172,16 @@ export function Header() {
                   )}
                 </div>
               ) : (
-                <Link key={item.label} href={item.href} onClick={closeMenu} className="rounded-lg px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-800/50 hover:text-zinc-100">
+                <Link key={item.label} href={item.href} onClick={closeMenu} className="rounded-md px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-800/50 hover:text-zinc-100">
                   {item.label}
                 </Link>
               )
             )}
             <div className="mt-2 flex flex-col gap-2 border-t border-zinc-800 pt-2">
-              <Link href="/sign-in" onClick={closeMenu} className="rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100">
+              <Link href="/sign-in" onClick={closeMenu} className="rounded-md px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100">
                 SIGN IN
               </Link>
-              <Link href="/join" onClick={closeMenu} className="rounded-lg bg-zinc-100 px-3 py-2 text-center text-sm font-medium text-zinc-950 hover:bg-white">
+              <Link href="/join" onClick={closeMenu} className="rounded-md bg-zinc-100 px-3 py-2 text-center text-sm font-medium text-zinc-950 hover:bg-white">
                 JOIN
               </Link>
             </div>
