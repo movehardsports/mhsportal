@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${dmSans.variable} antialiased`}>
-      <body className="min-h-screen flex flex-col font-[family-name:var(--font-dm-sans)]">
+      <body className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100 font-[family-name:var(--font-dm-sans)]">
         <Header />
         {children}
       </body>
