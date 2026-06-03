@@ -7,6 +7,7 @@ export type Brand = {
   location: string
   sports: Sport[]
   campaign_types: CampaignType[]
+  avatar_url: string | null
   bio: string | null
   ig_account: string | null
   yt_account: string | null

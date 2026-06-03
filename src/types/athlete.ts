@@ -11,6 +11,7 @@ export type Athlete = {
   gender: Gender
   birth_year: number
   location: string
+  avatar_url: string | null
   bio: string | null
   ig_account: string | null
   yt_account: string | null
