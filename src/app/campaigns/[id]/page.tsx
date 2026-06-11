@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { MOCK_CAMPAIGNS } from '@/mocks/campaigns'
 import { MOCK_BRANDS } from '@/mocks/brands'
 import { Tags } from '@/components/tags'
+import { ApplyButton } from '@/components/apply-button'
 import { sportLabel, campaignTypeLabel, budgetLabel } from '@/lib/labels'
 
 export default async function CampaignPage({ params }: { params: Promise<{ id: string }> }) {
@@ -58,12 +59,11 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
               ))}
             </div>
 
-            <button
-              type="button"
-              className="w-full rounded-md bg-zinc-100 py-3 text-sm font-semibold text-zinc-950 transition-colors hover:bg-white"
-            >
-              Apply now
-            </button>
+            <ApplyButton
+              campaignId={campaign.id}
+              campaignTitle={campaign.title}
+              brandName={brand?.brand_name ?? ''}
+            />
           </div>
         </div>
 
