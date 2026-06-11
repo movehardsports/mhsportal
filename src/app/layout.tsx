@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100 font-[family-name:var(--font-dm-sans)]">
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
