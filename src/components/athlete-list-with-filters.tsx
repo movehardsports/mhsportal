@@ -17,7 +17,7 @@ function AthleteRow({ athlete }: { athlete: Athlete }) {
 
   return (
     <Link
-      href={`/explore/athletes/${athlete.sports[0]}/${athlete.id}`}
+      href={`/explore/athletes/${athlete.id}`}
       className="group flex items-start gap-6 rounded-md border border-zinc-800/60 bg-zinc-900/50 p-6 transition-all hover:border-zinc-700 hover:bg-zinc-900"
     >
       <div className="min-w-0 flex-1 space-y-4">
