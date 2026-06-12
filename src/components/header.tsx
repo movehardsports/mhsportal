@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { useAuth } from '@/context/auth-context'
 
 type NavChild = { label: string; href: string; description: string }
 
@@ -45,6 +46,7 @@ function Chevron({ open }: { open: boolean }) {
 }
 
 export function Header() {
+  const { user, signOut } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 
@@ -130,12 +132,27 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-2 ml-auto">
-          <Link href="/sign-in" className="rounded-md px-4 py-1.5 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100">
-            SIGN IN
-          </Link>
-          <Link href="/join" className="rounded-md bg-zinc-100 px-4 py-1.5 text-sm font-semibold text-zinc-950 transition-all hover:bg-white hover:scale-[1.02]">
-            JOIN
-          </Link>
+          {user ? (
+            <>
+              <span className="text-sm text-zinc-400 truncate max-w-[160px]">{user.name}</span>
+              <button
+                type="button"
+                onClick={signOut}
+                className="rounded-md px-4 py-1.5 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
+              >
+                SIGN OUT
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/sign-in" className="rounded-md px-4 py-1.5 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100">
+                SIGN IN
+              </Link>
+              <Link href="/join" className="rounded-md bg-zinc-100 px-4 py-1.5 text-sm font-semibold text-zinc-950 transition-all hover:bg-white hover:scale-[1.02]">
+                JOIN
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="w-7 md:hidden ml-auto" aria-hidden="true" />
@@ -178,12 +195,27 @@ export function Header() {
               )
             )}
             <div className="mt-2 flex flex-col gap-2 border-t border-zinc-800 pt-2">
-              <Link href="/sign-in" onClick={closeMenu} className="rounded-md px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100">
-                SIGN IN
-              </Link>
-              <Link href="/join" onClick={closeMenu} className="rounded-md bg-zinc-100 px-3 py-2 text-center text-sm font-medium text-zinc-950 hover:bg-white">
-                JOIN
-              </Link>
+              {user ? (
+                <>
+                  <span className="px-3 py-2 text-sm text-zinc-400 truncate">{user.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => { signOut(); closeMenu() }}
+                    className="rounded-md px-3 py-2 text-left text-sm text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
+                  >
+                    SIGN OUT
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/sign-in" onClick={closeMenu} className="rounded-md px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100">
+                    SIGN IN
+                  </Link>
+                  <Link href="/join" onClick={closeMenu} className="rounded-md bg-zinc-100 px-3 py-2 text-center text-sm font-medium text-zinc-950 hover:bg-white">
+                    JOIN
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>
